@@ -1,0 +1,176 @@
+{
+  "project": "Dr. Evil's Coffee",
+  "totalImages": 15,
+  "criticalImages": 8,
+  "optionalImages": 7,
+  "images": {
+    "critical": [
+      {
+        "id": 1,
+        "name": "vintage-dr-evil.png",
+        "currentSource": "figma:asset/a5072b8f4dec9d029a7d0951bb41aad336ecc101.png",
+        "destinationPath": "/public/assets/images/heritage/vintage-dr-evil.png",
+        "usedIn": [
+          "/src/app/components/Legacy.tsx",
+          "/src/app/components/SpectacleSection.tsx"
+        ],
+        "description": "Vintage photo of Dr. Evil for heritage section",
+        "recommendedSize": "800x600 or native resolution",
+        "format": "PNG or JPEG"
+      },
+      {
+        "id": 2,
+        "name": "dressing-room.png",
+        "currentSource": "figma:asset/5e4a846cfffc004d21d02346ebeb3babcffbf9e5.png",
+        "destinationPath": "/public/assets/images/heritage/dressing-room.png",
+        "usedIn": ["/src/app/components/Legacy.tsx"],
+        "description": "Morris Costumes dressing room photo",
+        "recommendedSize": "800x600",
+        "format": "PNG or JPEG"
+      },
+      {
+        "id": 3,
+        "name": "morris-costumes.png",
+        "currentSource": "figma:asset/22c4a8cb31c39e2e298e9c858c24e9f8b7cb27cb.png",
+        "destinationPath": "/public/assets/images/heritage/morris-costumes.png",
+        "usedIn": ["/src/app/components/Legacy.tsx"],
+        "description": "Historic Morris Costumes building/storefront",
+        "recommendedSize": "800x600",
+        "format": "PNG or JPEG"
+      },
+      {
+        "id": 4,
+        "name": "modern-lab.png",
+        "currentSource": "figma:asset/90204a9de87b219693e09b17948c05e1120dc62e.png",
+        "destinationPath": "/public/assets/images/heritage/modern-lab.png",
+        "usedIn": ["/src/app/components/Legacy.tsx"],
+        "description": "Modern coffee laboratory setup",
+        "recommendedSize": "800x600",
+        "format": "PNG or JPEG"
+      },
+      {
+        "id": 5,
+        "name": "philip-morris.png",
+        "currentSource": "figma:asset/5afd102afd63c588d2a00815ad165975017777a9.png",
+        "destinationPath": "/public/assets/images/heritage/philip-morris.png",
+        "usedIn": ["/src/app/components/ThirdAct.tsx"],
+        "description": "Photo of grandfather Philip Morris",
+        "recommendedSize": "800x600 or native resolution",
+        "format": "PNG or JPEG"
+      },
+      {
+        "id": 6,
+        "name": "roest-lab.png",
+        "currentSource": "figma:asset/da595d7793ad0acd760b0c20bef48302badb6a0d.png",
+        "destinationPath": "/public/assets/images/equipment/roest-lab.png",
+        "usedIn": ["/src/app/components/TheLab.tsx"],
+        "description": "ROEST Production Roaster in laboratory setting",
+        "recommendedSize": "1200x800",
+        "format": "PNG or JPEG"
+      },
+      {
+        "id": 7,
+        "name": "lamarzocco.png",
+        "currentSource": "figma:asset/963e61723988cd00ad18776e22253c8d4e876c91.png",
+        "destinationPath": "/public/assets/images/equipment/lamarzocco.png",
+        "usedIn": ["/src/app/components/TheLab.tsx"],
+        "description": "La Marzocco espresso machine",
+        "recommendedSize": "1200x800",
+        "format": "PNG or JPEG"
+      },
+      {
+        "id": 8,
+        "name": "founder.png",
+        "currentSource": "figma:asset/17ea9e464911f380cf6716cb8f26cca9edfd4d1d.png",
+        "destinationPath": "/public/assets/images/about/founder.png",
+        "usedIn": ["/src/app/pages/About.tsx"],
+        "description": "Founder photo for About page",
+        "recommendedSize": "800x600 or native resolution",
+        "format": "PNG or JPEG"
+      }
+    ],
+    "optional": [
+      {
+        "id": 9,
+        "name": "coffee-beans-macro.jpg",
+        "currentSource": "https://images.unsplash.com/photo-1669561670027-5cea093d8c2d",
+        "destinationPath": "/public/assets/images/hero/coffee-beans-macro.jpg",
+        "usedIn": ["/src/app/components/Hero.tsx"],
+        "description": "Hero background - coffee beans macro",
+        "recommendedSize": "1920x1080 or larger",
+        "format": "JPEG or WebP",
+        "note": "Currently using Unsplash - works fine but hosting locally improves performance"
+      },
+      {
+        "id": 10,
+        "name": "colombia-plantation.jpg",
+        "currentSource": "https://images.unsplash.com/photo-1620292361418-f48e64590736",
+        "destinationPath": "/public/assets/images/coffee/colombia-plantation.jpg",
+        "usedIn": ["/src/app/components/collection/CollectionGrid.tsx"],
+        "description": "Colombia coffee plantation (Andes)",
+        "recommendedSize": "800x1200",
+        "format": "JPEG or WebP"
+      },
+      {
+        "id": 11,
+        "name": "colombia-cherries.jpg",
+        "currentSource": "https://images.unsplash.com/photo-1756121422046-8a3638d75efb",
+        "destinationPath": "/public/assets/images/coffee/colombia-cherries.jpg",
+        "usedIn": ["/src/app/components/collection/CollectionGrid.tsx"],
+        "description": "Colombian coffee cherries harvest",
+        "recommendedSize": "800x1200",
+        "format": "JPEG or WebP"
+      },
+      {
+        "id": 12,
+        "name": "costa-rica-plantation.jpg",
+        "currentSource": "https://images.unsplash.com/photo-1712607613395-3f0612ad16eb",
+        "destinationPath": "/public/assets/images/coffee/costa-rica-plantation.jpg",
+        "usedIn": ["/src/app/components/collection/CollectionGrid.tsx"],
+        "description": "Costa Rica coffee plantation",
+        "recommendedSize": "800x1200",
+        "format": "JPEG or WebP"
+      },
+      {
+        "id": 13,
+        "name": "ethiopia-highlands.jpg",
+        "currentSource": "https://images.unsplash.com/photo-1712553935892-1c537df3e96c",
+        "destinationPath": "/public/assets/images/coffee/ethiopia-highlands.jpg",
+        "usedIn": ["/src/app/components/collection/CollectionGrid.tsx"],
+        "description": "Ethiopia coffee plantation highlands",
+        "recommendedSize": "800x1200",
+        "format": "JPEG or WebP"
+      },
+      {
+        "id": 14,
+        "name": "peru-mountains.jpg",
+        "currentSource": "https://images.unsplash.com/photo-1752067954948-fad43a7457de",
+        "destinationPath": "/public/assets/images/coffee/peru-mountains.jpg",
+        "usedIn": ["/src/app/components/collection/CollectionGrid.tsx"],
+        "description": "Peru coffee farm mountains",
+        "recommendedSize": "800x1200",
+        "format": "JPEG or WebP"
+      },
+      {
+        "id": 15,
+        "name": "yemen-terraces.jpg",
+        "currentSource": "https://images.unsplash.com/photo-1759458494971-377d0492243c",
+        "destinationPath": "/public/assets/images/coffee/yemen-terraces.jpg",
+        "usedIn": ["/src/app/components/collection/CollectionGrid.tsx"],
+        "description": "Yemen coffee terraces mountain",
+        "recommendedSize": "800x1200",
+        "format": "JPEG or WebP"
+      }
+    ]
+  },
+  "exportInstructions": {
+    "step1": "Export the 8 CRITICAL images from Figma (these use figma:asset imports)",
+    "step2": "Create the folder structure in /public/assets/images/",
+    "step3": "Place exported images in their designated folders",
+    "step4": "Update component imports (see DEPLOYMENT.md for details)",
+    "step5": "(Optional) Download and host the 7 Unsplash images locally",
+    "step6": "Optimize all images for web (compress, resize)",
+    "step7": "Test build: npm run build",
+    "step8": "Deploy!"
+  }
+}
