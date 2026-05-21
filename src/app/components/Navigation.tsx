@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
+import { HALLOWEEN_BANNER_OFFSET_CLASS } from './HalloweenCountdownBanner';
 
 const SHOP_URL = 'https://shop.drevil.coffee';
 
@@ -66,7 +67,7 @@ export function Navigation() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed ${HALLOWEEN_BANNER_OFFSET_CLASS} left-0 right-0 z-50 transition-all duration-300 ${
           scrolled ? 'bg-black/95 backdrop-blur-sm' : 'bg-transparent'
         }`}
         initial={{ y: -100 }}
@@ -150,7 +151,7 @@ export function Navigation() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-black md:hidden"
+            className={`fixed ${HALLOWEEN_BANNER_OFFSET_CLASS} left-0 right-0 bottom-0 z-40 bg-black md:hidden`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router';
 import { Navigation } from '../components/Navigation';
 import { Footer } from '../components/Footer';
+import { HalloweenCountdownBanner } from '../components/HalloweenCountdownBanner';
 import { useEffect } from 'react';
 
 export function Root() {
@@ -15,6 +16,7 @@ export function Root() {
 
   return (
     <div className="min-h-screen bg-black">
+      <HalloweenCountdownBanner />
       <Navigation />
       <Outlet />
       <Footer />

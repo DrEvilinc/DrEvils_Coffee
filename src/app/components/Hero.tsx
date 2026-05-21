@@ -3,27 +3,21 @@ import { Link } from 'react-router';
 import { ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 
+// Swap to compare: laboratory-illustration.png | brand-laboratory.png
+const heroBackgroundImage = '/assets/images/hero/brand-laboratory.png';
+
 export function Hero() {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
       {/* Background Image with Grid Overlay */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/30 to-black z-10"></div>
-        <img 
-          src="https://images.unsplash.com/photo-1669561670027-5cea093d8c2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2ZmZWUlMjBiZWFucyUyMG1hY3JvJTIwY2xvc2UlMjB1cHxlbnwxfHx8fDE3NzA2ODA4Njd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-          alt="Coffee beans macro"
-          className="w-full h-full object-cover opacity-30"
+        <img
+          src={heroBackgroundImage}
+          alt="Dr. Evil's Coffee laboratory branding"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-50"
         />
-        {/* Technical Grid Overlay */}
-        <div className="absolute inset-0 z-20 opacity-10" 
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '50px 50px'
-          }}
-        ></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/70 z-10"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,transparent_70%)] z-10"></div>
       </div>
 
       {/* Main Content */}
