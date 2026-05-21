@@ -1,5 +1,9 @@
+const SHOP_BASE = 'https://shop.drevil.coffee';
+
+// Keep in sync with live products at shop.drevil.coffee
 export interface Coffee {
   id: string;
+  shopUrl: string;
   origin: string;
   producer: string;
   variety?: string;
@@ -19,6 +23,7 @@ export interface Coffee {
 export const coffees: Coffee[] = [
   {
     id: 'colombia-santa-isabel',
+    shopUrl: `${SHOP_BASE}/products/lab-005-colombia-edward-sandoval-chiroso`,
     origin: 'COLOMBIA — SANTA ISABEL',
     producer: 'Edward Sandoval',
     variety: 'Chiroso',
@@ -38,6 +43,7 @@ export const coffees: Coffee[] = [
   },
   {
     id: 'colombia-aponte',
+    shopUrl: `${SHOP_BASE}/products/lab-001-colombia-honey-aponte-javier-janamejoy`,
     origin: 'COLOMBIA — APONTE',
     producer: 'Javier Janamejoy',
     process: 'Honey Process',
@@ -56,25 +62,29 @@ export const coffees: Coffee[] = [
     lotSize: 12,
   },
   {
-    id: 'costa-rica-zarcero',
-    origin: 'COSTA RICA — ZARCERO',
-    producer: 'Monte Brisas — Villa Sarchi',
+    id: 'colombia-buesaco',
+    shopUrl: `${SHOP_BASE}/products/lab-006-colombia-buesaco-alianza-granjeros`,
+    origin: 'COLOMBIA — BUESACO',
+    producer: 'Alianza Granjeros',
+    variety: 'Caturra, Colombia, Typica',
     process: 'Washed',
-    elevation: '1,500–1,750 MASL',
+    elevation: '1,900 MASL',
     tier: 'FOUNDATION',
     tierLabel: 'Foundation Series',
-    descriptor: 'Balanced. Versatile. Controlled.',
-    flavorProfile: ['Raw sugar', 'Apple', 'Cocoa nibs', 'Toffee almond'],
+    descriptor: 'Caramel sweetness. Balanced acidity. Bittersweet chocolate.',
+    flavorProfile: ['Caramel', 'Unrefined sugar', 'Bittersweet chocolate', 'Pistachio', 'Dried fruit'],
     description: [
-      'This lot bridges brightness and chocolate. At lighter development it presents tea-like structure and brisk acidity. Darker, it moves into espresso territory with chocolate core and almond sweetness.',
-      'A daily driver without compromise.',
+      'From the Alianza Granjeros cooperative in Buesaco, Nariño — approachable enough for daily drinking, complex enough to keep you interested.',
+      'Caramel and unrefined sugar sweetness at the center, well-balanced acidity, bittersweet chocolate, a hint of pistachio, and subtle dried fruit in the finish.',
+      'Push to fuller development and it becomes a formidable espresso base. Your everyday evil.',
     ],
-    flame: 3.5,
-    clarity: 4,
+    flame: 4,
+    clarity: 3.5,
     lotSize: 40,
   },
   {
     id: 'ethiopia-gera',
+    shopUrl: `${SHOP_BASE}/products/lab-003-ethiopia-organic-gera-nano-challa`,
     origin: 'ETHIOPIA — GERA',
     producer: 'Nano Challa',
     process: 'Washed',
@@ -95,6 +105,7 @@ export const coffees: Coffee[] = [
   },
   {
     id: 'peru-cajamarca',
+    shopUrl: `${SHOP_BASE}/products/lab-002-peru-huabal-san-pablo`,
     origin: 'PERU — CAJAMARCA',
     producer: 'Huabal San Pablo',
     process: 'Washed',
@@ -113,6 +124,7 @@ export const coffees: Coffee[] = [
   },
   {
     id: 'yemen-haima',
+    shopUrl: `${SHOP_BASE}/products/lab-004-yemen-mokha-haimi`,
     origin: 'YEMEN — HAIMA DISTRICT',
     producer: 'Mokha Haimi',
     process: 'Natural',

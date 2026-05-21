@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
+import { ExternalLink } from 'lucide-react';
 import { Coffee } from '../../data/coffees';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { Button } from '../ui/button';
 
 interface CoffeeCardProps {
   coffee: Coffee;
@@ -9,13 +11,14 @@ interface CoffeeCardProps {
 }
 
 export function CoffeeCard({ coffee, image, index }: CoffeeCardProps) {
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group cursor-pointer"
+      className="group"
     >
       {/* Image Container */}
       <div className="relative aspect-[3/4] bg-zinc-900 border border-zinc-800 overflow-hidden mb-6">
@@ -114,6 +117,22 @@ export function CoffeeCard({ coffee, image, index }: CoffeeCardProps) {
             <p className="text-white font-mono">{coffee.lotSize} bags</p>
           </div>
         </div>
+
+        <Button
+          size="lg"
+          asChild
+          className="w-full mt-8 bg-white text-black hover:bg-zinc-200 border-white hover:border-zinc-300 font-mono text-xs tracking-[0.25em] h-auto py-5"
+        >
+          <a
+            href={coffee.shopUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2"
+          >
+            SHOP THIS LOT
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </Button>
       </div>
     </motion.div>
   );

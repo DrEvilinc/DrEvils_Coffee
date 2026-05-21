@@ -1,5 +1,7 @@
 import { motion } from 'motion/react';
-// import { Button } from '../ui/button';
+import { Button } from '../ui/button';
+
+const SHOP_URL = 'https://shop.drevil.coffee';
 
 export function CollectionHero() {
   // const scrollToCollection = () => {
@@ -29,6 +31,28 @@ export function CollectionHero() {
           <div className="space-y-4 text-lg md:text-xl text-zinc-300 font-light mb-2 max-w-2xl mx-auto leading-relaxed">
             <p>Each lot in this collection was selected for structure, elevation, and clarity of expression. No blends. No filler. No shortcuts.</p>
             <p className="pt-4">Only coffees that stand on their own.</p>
+          </div>
+
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button
+              size="lg"
+              asChild
+              className="bg-white text-black hover:bg-zinc-200 font-mono text-xs tracking-[0.3em] px-12 py-7 h-auto"
+            >
+              <a href={SHOP_URL} target="_blank" rel="noopener noreferrer">
+                SHOP THE LAB
+              </a>
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              asChild
+              className="border-zinc-700 text-zinc-300 hover:bg-zinc-900 hover:text-white font-mono text-xs tracking-[0.3em] px-12 py-7 h-auto"
+            >
+              <a href="#collection-grid">
+                VIEW PROFILES
+              </a>
+            </Button>
           </div>
 
           {/* <div className="mt-12 pt-12 border-t border-zinc-800 max-w-md mx-auto">

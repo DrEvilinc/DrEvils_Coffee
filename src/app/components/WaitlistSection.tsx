@@ -85,8 +85,16 @@ export function WaitlistSection() {
           </h2>
           <div className="h-px w-32 bg-zinc-800 mx-auto mb-8"></div>
           <p className="text-zinc-400 text-lg max-w-2xl mx-auto font-light leading-relaxed">
-            Be among the first to receive <strong className="text-white font-normal">Batch 001</strong>. 
-            Limited quantity available for the inaugural roast. 
+            The lab is open and roasting to order. Join for new drop alerts, lab reports, and first notice when limited lots release — or{' '}
+            <a
+              href="https://shop.drevil.coffee"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-zinc-300 underline underline-offset-4 transition-colors"
+            >
+              shop the collection
+            </a>{' '}
+            anytime.
           </p>
         </motion.div>
 
@@ -101,7 +109,7 @@ export function WaitlistSection() {
               <CheckCircle2 className="w-16 h-16 text-white mx-auto mb-6" />
               <h3 className="text-2xl text-white font-light mb-3">Welcome to the Laboratory</h3>
               <p className="text-zinc-400 font-mono text-sm">
-                You've been added to the waitlist for Batch 001.
+                You&apos;re on the list. Expect roast alerts and lab intel from the laboratory.
               </p>
             </div>
           ) : (
@@ -138,7 +146,7 @@ export function WaitlistSection() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="evil@laboratory.coffee"
+                    placeholder="Hello@DrEvil.Coffee"
                     pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                     title="Please enter a valid email address (e.g., sean@drevil.info)"
                     required

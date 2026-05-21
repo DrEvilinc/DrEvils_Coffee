@@ -1,5 +1,51 @@
-import { FlaskConical, Instagram, Youtube, Mail } from 'lucide-react';
+import { FlaskConical, Instagram, Youtube, Mail, Facebook, Twitter } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router';
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.77 1.52V6.76a4.85 4.85 0 0 1-1.1-.07z" />
+    </svg>
+  );
+}
+
+const socialLinks = [
+  {
+    label: 'Instagram',
+    handle: '@DrEvilsCoffee',
+    href: 'https://www.instagram.com/DrEvilsCoffee',
+    icon: Instagram,
+  },
+  {
+    label: 'TikTok',
+    handle: '@DrEvilsCoffee',
+    href: 'https://www.tiktok.com/@DrEvilsCoffee',
+    icon: TikTokIcon,
+  },
+  {
+    label: 'Facebook',
+    handle: '/DrEvilsCoffee',
+    href: 'https://www.facebook.com/DrEvilsCoffee',
+    icon: Facebook,
+  },
+  {
+    label: 'YouTube',
+    handle: '@DrEvilsCoffee',
+    href: 'https://www.youtube.com/@DrEvilsCoffee',
+    icon: Youtube,
+  },
+  {
+    label: 'X',
+    handle: '@DrEvilsCoffee',
+    href: 'https://x.com/DrEvilsCoffee',
+    icon: Twitter,
+  },
+] as const;
 
 export function Footer() {
   const location = useLocation();
@@ -52,7 +98,7 @@ export function Footer() {
               <li><a href="#lab" className="text-zinc-500 hover:text-white text-sm transition-colors" onClick={(e) => handleAnchorClick(e, '#lab')}>The Lab</a></li>
               <li><a href="#first-act" className="text-zinc-500 hover:text-white text-sm transition-colors" onClick={(e) => handleAnchorClick(e, '#first-act')}>History</a></li>
               <li><Link to="/about" className="text-zinc-500 hover:text-white text-sm transition-colors">About</Link></li>
-              <li><a href="#waitlist" className="text-zinc-500 hover:text-white text-sm transition-colors" onClick={(e) => handleAnchorClick(e, '#waitlist')}>Waitlist</a></li>
+              <li><a href="#waitlist" className="text-zinc-500 hover:text-white text-sm transition-colors" onClick={(e) => handleAnchorClick(e, '#waitlist')}>Join the Lab</a></li>
             </ul>
           </div>
 
@@ -62,22 +108,29 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <a href="mailto:Sean@DrEvil.info" className="text-zinc-500 hover:text-white text-sm transition-colors flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                  <Mail className="w-4 h-4 shrink-0" />
                   Email
                 </a>
               </li>
-              <li>
-                <a href="#" className="text-zinc-500 hover:text-white text-sm transition-colors flex items-center gap-2">
-                  <Instagram className="w-4 h-4" />
-                  Instagram
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-zinc-500 hover:text-white text-sm transition-colors flex items-center gap-2">
-                  <Youtube className="w-4 h-4" />
-                  YouTube
-                </a>
-              </li>
+              {socialLinks.map(({ label, handle, href, icon: Icon }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-zinc-500 hover:text-white text-sm transition-colors flex items-center gap-2 group"
+                    aria-label={`${label} — ${handle}`}
+                  >
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span>
+                      {label}
+                      <span className="text-zinc-600 group-hover:text-zinc-400 ml-1 font-mono text-xs">
+                        {handle}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

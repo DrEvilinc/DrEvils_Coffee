@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 
+const SHOP_URL = 'https://shop.drevil.coffee';
+
 const navItems = [
   { label: 'Collection', href: '/collection', type: 'route' },
   { label: 'The Lab', href: '#lab', type: 'anchor' },
@@ -77,12 +79,12 @@ export function Navigation() {
           <div className="mt-1">Charlotte, North Carolina</div>
           <div className="mt-1">35° 11′ 40.9″ N 80° 47′ 20.0″ W</div>
         </div>
-        <div className="hidden md:block absolute top-8 right-8 text-zinc-400 font-mono text-xs tracking-wider text-right">
+        <div className="hidden 2xl:block absolute top-8 right-8 text-zinc-400 font-mono text-xs tracking-wider text-right pointer-events-none">
           <div>PRECISION ROASTING</div>
           <div className="mt-1">EST. 2025</div>
         </div>
 
-        <div className={`max-w-7xl mx-auto px-6 py-6 flex items-center justify-between ${
+        <div className={`max-w-7xl mx-auto px-6 py-6 flex items-center justify-between 2xl:pr-44 ${
           scrolled ? 'border-b border-zinc-800' : ''
         }`}>
           {/* Logo */}
@@ -91,7 +93,7 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-4 lg:gap-6 shrink-0">
             {navItems.map((item) => (
               item.type === 'route' ? (
                 <Link
@@ -112,14 +114,26 @@ export function Navigation() {
                 </a>
               )
             ))}
+            <div className="flex items-center gap-3 ml-2">
+            <Button
+              size="sm"
+              variant="outline"
+              asChild
+              className="bg-white text-black hover:bg-zinc-200 border-white hover:border-zinc-300 font-mono text-xs tracking-widest whitespace-nowrap"
+            >
+              <a href={SHOP_URL} target="_blank" rel="noopener noreferrer">
+                SHOP THE LAB
+              </a>
+            </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={scrollToWaitlist}
-              className="bg-white text-black hover:bg-zinc-200 border-white hover:border-zinc-300 font-mono text-xs tracking-widest"
+              className="bg-white text-black hover:bg-zinc-200 border-white hover:border-zinc-300 font-mono text-xs tracking-widest whitespace-nowrap"
             >
-              JOIN WAITLIST
+              JOIN THE LAB
             </Button>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -179,10 +193,30 @@ export function Navigation() {
               >
                 <Button
                   size="lg"
+                  asChild
+                  className="bg-white text-black hover:bg-zinc-200 font-mono text-xs tracking-widest px-8"
+                >
+                  <a
+                    href={SHOP_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    SHOP THE LAB
+                  </a>
+                </Button>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (navItems.length + 1) * 0.1 }}
+              >
+                <Button
+                  size="lg"
                   onClick={scrollToWaitlist}
                   className="bg-white text-black hover:bg-zinc-200 font-mono text-xs tracking-widest px-8"
                 >
-                  JOIN WAITLIST
+                  JOIN THE LAB
                 </Button>
               </motion.div>
             </div>
