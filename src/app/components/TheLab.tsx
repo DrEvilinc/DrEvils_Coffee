@@ -10,24 +10,24 @@ const features = [
     icon: Thermometer,
     title: "Thermal Control",
     description: "Temperature is managed across the full roast curve to maintain even development and prevent localized scorching. Each batch is logged against defined thermal targets.",
-    detail: "The ROEST fluid-bed system delivers consistent convective heat application across the roast curve. This reduces temperature variance between beans and improves profile repeatability."
+    detail: "The ROEST dual-platform system delivers consistent convective heat application across the full roast curve. Independent control of airflow, drum speed, and temperature reduces variance between beans and ensures profile repeatability batch after batch."
   },
   {
     icon: Gauge,
     title: "Real-Time Data Logging",
-    description: "Temperature, airflow, and drum speed are sampled at 100Hz and recorded for each production run. Roast curves are archived for verification and repeatability.",
+    description: "Temperature, airflow, and drum speed are monitored continuously across 18+ sensors and recorded for each production run. Roast curves are archived in ROEST Connect for verification and repeatability.",
     detail: "Production data is captured at 100 measurements per second throughout the roast cycle. Each batch generates a complete thermal profile that is stored and can be referenced for quality control and replication."
   },
   {
     icon: LineChart,
     title: "Profile Consistency",
-    description: "Validated roast profiles are reproduced within defined tolerance ranges to ensure stable extraction performance across batches.",
+    description: "Validated roast profiles are developed on the L200 Ultra and replicated on the P3000 production roaster. Automated between-batch protocols ensure stable extraction performance across every run.",
     detail: "Each roast profile is executed digitally with automated control over temperature curves, airflow patterns, and development timing. This removes manual variability and ensures consistent results batch after batch."
   },
   {
     icon: Microscope,
     title: "Controlled Batch Size",
-    description: "Production is limited to 250g micro-batches to maintain tight thermal control and reduce profile drift.",
+    description: "Production scales from 200g precision sample batches on the L200 Ultra to full 3kg production runs on the P3000 — up to 25 kg per hour throughput from a tabletop footprint.",
     detail: "Small batch roasting allows for precise heat distribution and faster response to temperature adjustments. This ensures every bean receives uniform thermal exposure throughout the roast cycle."
   }
 ];
@@ -97,13 +97,7 @@ export function TheLab() {
               </div>
 
               <p className="text-zinc-300 leading-relaxed mb-4">
-                We roast on a ROEST fluid-bed platform engineered for controlled small-batch production.
-              </p>
-              <p className="text-zinc-300 leading-relaxed mb-4">
-                Temperature, airflow, and drum speed are monitored in real time at 100Hz. Each roast is recorded and repeatable within ±1°C tolerance, allowing us to deliver stable profiles across espresso and filter programs.
-              </p>
-              <p className="text-zinc-300 leading-relaxed font-mono text-sm">
-                Roast development is measured, not estimated.
+                We roast on a dual ROEST platform — the L200 Ultra for precision sample development and the P3000 automated production roaster for scaled output. Convection heating ensures even development with zero scorching risk. Bean, air, drum, inlet, and pressure are monitored across 18+ sensors simultaneously. Every roast is logged, repeatable, and built to replicate batch after batch. Roast development is measured, not estimated.
               </p>
 
               <div className="bg-zinc-900 border border-zinc-700 p-6 mt-6">
@@ -111,19 +105,19 @@ export function TheLab() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-zinc-600 text-xs mb-1 font-mono">Batch Size</p>
-                    <p className="text-white text-base">250g</p>
+                    <p className="text-white text-base">200g – 3kg</p>
                   </div>
                   <div>
-                    <p className="text-zinc-600 text-xs mb-1 font-mono">Thermal Accuracy</p>
-                    <p className="text-white text-base">±1°C</p>
+                    <p className="text-zinc-600 text-xs mb-1 font-mono">Throughput</p>
+                    <p className="text-white text-base">Up to 25 kg/hr</p>
                   </div>
                   <div>
-                    <p className="text-zinc-600 text-xs mb-1 font-mono">Data Sampling</p>
-                    <p className="text-white text-base">100Hz</p>
+                    <p className="text-zinc-600 text-xs mb-1 font-mono">Sensor Array</p>
+                    <p className="text-white text-base">18+ sensors</p>
                   </div>
                   <div>
-                    <p className="text-zinc-600 text-xs mb-1 font-mono">Profile Repeatability</p>
-                    <p className="text-white text-base">99.9%</p>
+                    <p className="text-zinc-600 text-xs mb-1 font-mono">Profile Control</p>
+                    <p className="text-white text-base">Fully automated</p>
                   </div>
                 </div>
               </div>
@@ -131,22 +125,22 @@ export function TheLab() {
               <div className="bg-zinc-900 border border-zinc-700 p-6 mt-6">
                 <p className="text-white font-mono text-sm mb-3 tracking-wide">CALIBRATED ROAST PROTOCOLS</p>
                 <p className="text-zinc-300 text-sm leading-relaxed">
-                  We develop and maintain structured roast profiles engineered for espresso, filter, and multi-roaster integration. Profiles are refined through controlled testing and documented for repeatability across production runs.
+                  We develop profiles on the L200 Ultra and scale them to the P3000 production roaster. Profiles are engineered for espresso, filter, and multi-roaster consistency — refined through controlled testing and documented for repeatability across every production run.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 pt-6 border-t border-zinc-800">
                 <div>
                   <p className="text-zinc-600 text-xs mb-1 font-mono">BATCH SIZE</p>
-                  <p className="text-white text-lg">250g</p>
+                  <p className="text-white text-lg">200g – 3kg</p>
                 </div>
                 <div>
                   <p className="text-zinc-600 text-xs mb-1 font-mono">PRECISION</p>
-                  <p className="text-white text-lg">±1°C</p>
+                  <p className="text-white text-lg">18+ sensors</p>
                 </div>
                 <div>
                   <p className="text-zinc-600 text-xs mb-1 font-mono">DATA RATE</p>
-                  <p className="text-white text-lg">100Hz</p>
+                  <p className="text-white text-lg">Continuous</p>
                 </div>
                 <div>
                   <p className="text-zinc-600 text-xs mb-1 font-mono">PROFILE CONTROL</p>
@@ -214,19 +208,19 @@ export function TheLab() {
               <div className="grid grid-cols-2 gap-6 pt-6 border-t border-zinc-800">
                 <div>
                   <p className="text-zinc-600 text-xs mb-2 font-mono tracking-wider">BATCH SIZE</p>
-                  <p className="text-white text-2xl font-mono font-light">250g</p>
+                  <p className="text-white text-2xl font-mono font-light">200g – 3kg</p>
                 </div>
                 <div>
                   <p className="text-zinc-600 text-xs mb-2 font-mono tracking-wider">PRECISION</p>
-                  <p className="text-white text-2xl font-mono font-light">±1°C</p>
+                  <p className="text-white text-2xl font-mono font-light">18+ sensors</p>
                 </div>
                 <div>
                   <p className="text-zinc-600 text-xs mb-2 font-mono tracking-wider">DATA RATE</p>
-                  <p className="text-white text-2xl font-mono font-light">100Hz</p>
+                  <p className="text-white text-2xl font-mono font-light">Continuous</p>
                 </div>
                 <div>
                   <p className="text-zinc-600 text-xs mb-2 font-mono tracking-wider">REPEATABILITY</p>
-                  <p className="text-white text-2xl font-mono font-light">99.9%</p>
+                  <p className="text-white text-2xl font-mono font-light">Automated</p>
                 </div>
               </div>
 
@@ -251,16 +245,16 @@ export function TheLab() {
             <p className="text-zinc-400 text-sm">Platform</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl md:text-5xl text-white font-light mb-2">100Hz</p>
-            <p className="text-sm text-zinc-500 tracking-wide">Real-Time Monitoring</p>
+            <p className="text-4xl md:text-5xl text-white font-light mb-2">25 kg/hr</p>
+            <p className="text-sm text-zinc-500 tracking-wide">Max Throughput</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl md:text-5xl text-white font-light mb-2">±1°C</p>
-            <p className="text-sm text-zinc-500 tracking-wide">Thermal Tolerance</p>
+            <p className="text-4xl md:text-5xl text-white font-light mb-2">18+ Sensors</p>
+            <p className="text-sm text-zinc-500 tracking-wide">Per Production Run</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl md:text-5xl text-white font-light mb-2">99.9%</p>
-            <p className="text-sm text-zinc-500 tracking-wide">Profile Consistency</p>
+            <p className="text-4xl md:text-5xl text-white font-light mb-2">3kg</p>
+            <p className="text-sm text-zinc-500 tracking-wide">True Batch Capacity</p>
           </div>
         </motion.div>
       </div>
