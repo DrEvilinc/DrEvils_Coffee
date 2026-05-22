@@ -239,11 +239,16 @@ Consider adding:
 - Clear browser cache
 - Check browser console for 404 errors
 
-**Waitlist not submitting:**
-- Verify Supabase environment variables are set
-- Check browser console for errors
-- Test health endpoint: `https://xgpvjlmmquuwimhscgfm.supabase.co/functions/v1/make-server-d19ebccd/health`
-- Verify Supabase edge function is deployed
+**Waitlist not submitting ("Load failed" in Safari):**
+- This usually means the browser could not reach the Supabase Edge Function (network/CORS) or the function returned a non-JSON error.
+- Test health endpoints (deploy the `server` function first):
+  - `https://xgpvjlmmquuwimhscgfm.supabase.co/functions/v1/server/make-server-d19ebccd/health`
+  - Legacy: `https://xgpvjlmmquuwimhscgfm.supabase.co/functions/v1/make-server-d19ebccd/health`
+- In **Supabase Dashboard** → **Edge Functions** → `server`: ensure it is deployed and not paused.
+- Set Edge Function secrets: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (required by `kv_store.tsx`).
+- Ensure table `kv_store_d19ebccd` exists (see `supabase/functions/server/kv_store.tsx`).
+- Redeploy: `supabase functions deploy server` from this repo (with Supabase CLI linked to project `xgpvjlmmquuwimhscgfm`).
+- After deploying, rebuild and redeploy the marketing site so the updated waitlist URL is live.
 
 **Build errors:**
 - Run `npm install` to ensure dependencies are installed

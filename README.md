@@ -143,8 +143,9 @@ npm run build
 - Dashboard: https://supabase.com/dashboard/project/xgpvjlmmquuwimhscgfm
 
 **Waitlist Endpoint:**
-- POST: `/functions/v1/make-server-d19ebccd/waitlist` - Submit signup
-- GET: `/functions/v1/make-server-d19ebccd/waitlist` - View all signups
+- POST: `/functions/v1/server/make-server-d19ebccd/waitlist` - Submit signup
+- GET: `/functions/v1/server/make-server-d19ebccd/waitlist` - View all signups
+- Legacy path `/functions/v1/make-server-d19ebccd/waitlist` is tried as fallback
 
 **Data Storage:**
 - Table: `kv_store_d19ebccd`

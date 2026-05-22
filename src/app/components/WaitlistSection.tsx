@@ -7,7 +7,7 @@ import { FlaskConical, CheckCircle2 } from 'lucide-react';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import '../../styles/phone-input.css';
-import { projectId, publicAnonKey } from '../../../utils/supabase/info';
+import { formatWaitlistError, submitWaitlistEntry } from '../../utils/waitlistApi';
 
 export function WaitlistSection() {
   const ref = useRef(null);
@@ -25,34 +25,17 @@ export function WaitlistSection() {
     setError('');
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/make-server-d19ebccd/waitlist`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${publicAnonKey}`,
-          },
-          body: JSON.stringify({ email, name, phone }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit waitlist entry');
-      }
+      await submitWaitlistEntry({ email, name, phone });
 
       setSubmitted(true);
       setEmail('');
       setName('');
       setPhone('');
-      
-      // Reset after 5 seconds
+
       setTimeout(() => setSubmitted(false), 5000);
     } catch (err) {
       console.error('Waitlist submission error:', err);
-      setError(err.message || 'Failed to submit. Please try again.');
+      setError(formatWaitlistError(err));
     } finally {
       setIsSubmitting(false);
     }

@@ -5,7 +5,16 @@ export type CountdownParts = {
   seconds: number;
 };
 
-/** Next Oct 31 at 00:00:00 local time; rolls to next year once that moment has passed. */
+/** All day October 31 (local time) — show awakened message instead of the timer. */
+export function isHalloweenDay(from: Date = new Date()): boolean {
+  return from.getMonth() === 9 && from.getDate() === 31;
+}
+
+/**
+ * Next Oct 31 at 00:00:00 local time.
+ * After Halloween day ends (Nov 1+), targets next year's Oct 31.
+ * While it is Oct 31, callers should use {@link isHalloweenDay} instead of counting down.
+ */
 export function getNextHalloweenMidnight(from: Date = new Date()): Date {
   const year = from.getFullYear();
   let target = new Date(year, 9, 31, 0, 0, 0, 0);
@@ -15,6 +24,14 @@ export function getNextHalloweenMidnight(from: Date = new Date()): Date {
   }
 
   return target;
+}
+
+/** Target date for the countdown, or null when the beast is awake (Halloween day). */
+export function getHalloweenCountdownTarget(from: Date = new Date()): Date | null {
+  if (isHalloweenDay(from)) {
+    return null;
+  }
+  return getNextHalloweenMidnight(from);
 }
 
 export function getCountdownParts(target: Date, now: Date = new Date()): CountdownParts {
