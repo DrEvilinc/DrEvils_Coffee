@@ -1,8 +1,7 @@
 import { motion } from 'motion/react';
-import { ExternalLink } from 'lucide-react';
 import { Coffee } from '../../data/coffees';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { Button } from '../ui/button';
+import { RoastGrindSelector } from './RoastGrindSelector';
 
 interface CoffeeCardProps {
   coffee: Coffee;
@@ -118,21 +117,7 @@ export function CoffeeCard({ coffee, image, index }: CoffeeCardProps) {
           </div>
         </div>
 
-        <Button
-          size="lg"
-          asChild
-          className="w-full mt-8 bg-white text-black hover:bg-zinc-200 border-white hover:border-zinc-300 font-mono text-xs tracking-[0.25em] h-auto py-5"
-        >
-          <a
-            href={coffee.shopUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2"
-          >
-            SHOP THIS LOT
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        </Button>
+        <RoastGrindSelector coffee={coffee} />
       </div>
     </motion.div>
   );

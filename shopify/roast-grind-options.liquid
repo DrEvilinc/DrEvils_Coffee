@@ -1,0 +1,53 @@
+{%- comment -%}
+  DR. EVIL'S COFFEE — ROAST + GRIND OPTIONS (product page)
+  =======================================================
+  Adds "Roast Level" and "Grind" selectors to the Shopify product page as
+  LINE-ITEM PROPERTIES (no variant explosion, price stays the same). Customers who
+  buy directly on shop.drevil.coffee get the same choices as the marketing site,
+  and both land on the order for the Order Printer work order.
+
+  INSTALL (Impact / Prestige / most Dawn-family themes)
+   1. Online Store → Themes → ⋯ → Edit code.
+   2. Snippets → Add a new snippet → name it `roast-grind-options` → paste this.
+   3. In the product form section (e.g. sections/main-product.liquid or
+      snippets/buy-buttons.liquid), render it INSIDE the <form> that has the
+      Add-to-cart button, before the submit button:
+        {% render 'roast-grind-options' %}
+   4. Optional: gate it to coffee only, e.g. wrap with
+        {% if product.type == 'Coffee' %} … {% endif %}
+
+  The selected values post as properties[Roast Level] and properties[Grind].
+{%- endcomment -%}
+
+<div class="drevil-rg" style="margin:16px 0;font-family:inherit;">
+  <div style="margin-bottom:14px;">
+    <label for="drevil-roast" style="display:block;font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;">
+      Roast Level
+    </label>
+    <select id="drevil-roast" name="properties[Roast Level]" style="width:100%;padding:10px;">
+      <option value="Light Roast">Light Roast</option>
+      <option value="House Roast" selected>House Roast — roaster's pick</option>
+      <option value="Dark Roast">Dark Roast</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="drevil-grind" style="display:block;font-size:12px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;">
+      Grind — ground to order
+    </label>
+    <select id="drevil-grind" name="properties[Grind]" style="width:100%;padding:10px;">
+      <option value="Whole Bean" selected>Whole Bean — grind fresh, keeps longest</option>
+      <option value="Espresso">Espresso</option>
+      <option value="Moka Pot">Moka Pot</option>
+      <option value="Aeropress">Aeropress</option>
+      <option value="Pour Over (V60)">Pour Over (V60)</option>
+      <option value="Drip / Auto">Drip / Auto</option>
+      <option value="Chemex">Chemex</option>
+      <option value="French Press">French Press</option>
+      <option value="Cold Brew">Cold Brew</option>
+    </select>
+    <p style="font-size:12px;opacity:.7;margin-top:6px;">
+      Whole bean recommended for the truest cup — grind just before brewing.
+    </p>
+  </div>
+</div>
