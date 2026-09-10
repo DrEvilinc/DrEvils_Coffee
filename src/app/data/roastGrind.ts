@@ -1,12 +1,16 @@
 /**
  * Dr. Evil's Coffee — roast tiers + grind model.
  *
- * ARCHITECTURE (decided 2026-09-09):
- *   Roast = a real Shopify VARIANT (Option1 "Roast"). 6 SKUs x 3 roasts = 18 variants.
- *           Keeps roast in Shopify analytics, keeps per-roast reporting, and each
- *           roast carries its own barcode for RICS parity.
- *   Grind = a cart LINE-ITEM PROPERTY. It is a fulfillment instruction, not a
- *           sellable unit. Prints on the pick ticket; does not multiply the catalog.
+ * ARCHITECTURE (catalog option A, locked 2026-09-10):
+ *   Roast    = Shopify VARIANT, Option1 "Roast".
+ *   Bag Size = Shopify VARIANT, Option2 "Bag Size" (8 oz / 12 oz / 1 lb / 2 lbs).
+ *              6 lots x 3 roasts x 4 sizes = 72 variants, each with its own SKU
+ *              (LAB-001-FC-12OZ) and UPC for RICS parity. Price varies by size only.
+ *   Grind    = a cart LINE-ITEM PROPERTY. It is a fulfillment instruction, not a
+ *              sellable unit. It prints on the pick ticket and doesn't multiply the catalog.
+ *
+ * The Shopify side is shopify/build_roast_variants_matrixify.py. Option values
+ * here must match that script (and the live store) verbatim.
  *
  * Roast names are the LOCKED primary set from the on-camera hero script — these
  * are the same three words that appear as on-screen supers when Sean says
@@ -25,7 +29,7 @@ export interface Roast {
   detail: string;
   /** 0-100, drives the roast-level meter in the UI. */
   intensity: number;
-  /** SKU suffix appended to the base SKU, e.g. LAB-001-LV. */
+  /** SKU segment after the base SKU, e.g. LAB-001-LV-12OZ. */
   skuSuffix: string;
 }
 
@@ -144,8 +148,28 @@ export const BREW_METHODS: { brew: string; grindId: GrindId }[] = GRINDS.flatMap
   (g) => g.brews.map((brew) => ({ brew, grindId: g.id }))
 );
 
+export type BagId = "8oz" | "12oz" | "1lb" | "2lb";
+
+export interface BagSize {
+  id: BagId;
+  /** Exact Shopify Option2 "Bag Size" value. Note "2 lbs", not "2 lb". */
+  optionValue: string;
+  /** Short label for the picker button. */
+  label: string;
+  skuSuffix: string;
+  netGrams: number;
+}
+
+export const BAG_SIZES: BagSize[] = [
+  { id: "8oz", optionValue: "8 oz", label: "8 oz", skuSuffix: "8OZ", netGrams: 227 },
+  { id: "12oz", optionValue: "12 oz", label: "12 oz", skuSuffix: "12OZ", netGrams: 340 },
+  { id: "1lb", optionValue: "1 lb", label: "1 lb", skuSuffix: "1LB", netGrams: 454 },
+  { id: "2lb", optionValue: "2 lbs", label: "2 lb", skuSuffix: "2LB", netGrams: 907 },
+];
+
 export const DEFAULT_ROAST: RoastId = "full-charge";
 export const DEFAULT_GRIND: GrindId = "whole-bean";
+export const DEFAULT_BAG: BagId = "12oz";
 
 export const getRoast = (id: RoastId) =>
   ROASTS.find((r) => r.id === id) ?? ROASTS[1];
@@ -153,6 +177,18 @@ export const getRoast = (id: RoastId) =>
 export const getGrind = (id: GrindId) =>
   GRINDS.find((g) => g.id === id) ?? GRINDS[0];
 
-/** Base SKU (LAB-001) + roast -> full variant SKU (LAB-001-FC). */
-export const variantSku = (baseSku: string, roastId: RoastId) =>
-  `${baseSku}-${getRoast(roastId).skuSuffix}`;
+export const getBag = (id: BagId) =>
+  BAG_SIZES.find((b) => b.id === id) ?? BAG_SIZES[1];
+
+/** Base SKU + roast + bag -> variant SKU, e.g. LAB-001-FC-12OZ. */
+export const variantSku = (baseSku: string, roastId: RoastId, bagId: BagId) =>
+  `${baseSku}-${getRoast(roastId).skuSuffix}-${getBag(bagId).skuSuffix}`;
+
+/**
+ * Pre-import bridge only. The live store still carries the legacy 3-value
+ * "Grind size" option (Pour Over / Espresso / Whole Bean) until the option A
+ * import runs, so map our 8 grinds to the nearest legacy variant. The exact
+ * grind still travels as the "Grind" attribute. Delete this after the import.
+ */
+export const legacyGrindOption = (id: GrindId): string =>
+  id === "whole-bean" ? "Whole Bean" : id === "fine" || id === "extra-fine" ? "Espresso" : "Pour Over";

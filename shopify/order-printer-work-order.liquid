@@ -6,7 +6,9 @@
   that tells the roaster exactly what to do on the ROEST and the Mahlkönig GH2.
 
   WHERE THE DATA COMES FROM
-   - Lot: line_item.sku — LAB-001 or LAB-001-LV/-FC/-MO (the first 7 chars are the lot).
+   - Lot: line_item.sku — LAB-001-FC-12OZ style (the first 7 chars are the lot).
+   - Bag: the "Bag Size" VARIANT option (catalog option A, 2026-09-10), printed
+     with total roasted grams for the line (net bag weight x quantity).
    - Roast: the "Roast" VARIANT option (Low Voltage / Full Charge / Maximum
      Overdrive). Before the roast variants are imported, the site records the
      choice as a line-item property "Roast" instead — this template reads both.
@@ -49,6 +51,19 @@
       {%- if key == 'brew method' -%}{%- assign brew = p.last -%}{%- endif -%}
     {%- endfor -%}
     {%- if roast == '' -%}{%- assign roast = 'Full Charge' -%}{%- endif -%}
+
+    {%- comment -%} Bag: the "Bag Size" variant option (8 oz / 12 oz / 1 lb / 2 lbs) -> net grams {%- endcomment -%}
+    {%- assign bag = '' -%}{%- assign bagG = 0 -%}
+    {%- for opt in line_item.variant.options -%}
+      {%- assign o = opt | downcase | strip -%}
+      {%- case o -%}
+        {%- when '8 oz' -%}{%- assign bag = opt -%}{%- assign bagG = 227 -%}
+        {%- when '12 oz' -%}{%- assign bag = opt -%}{%- assign bagG = 340 -%}
+        {%- when '1 lb' -%}{%- assign bag = opt -%}{%- assign bagG = 454 -%}
+        {%- when '2 lbs', '2 lb' -%}{%- assign bag = opt -%}{%- assign bagG = 907 -%}
+      {%- endcase -%}
+    {%- endfor -%}
+    {%- assign roastedG = bagG | times: line_item.quantity -%}
 
     {%- assign sku = line_item.sku | upcase | slice: 0, 7 -%}
 
@@ -93,6 +108,7 @@
 
       <div class="row">
         <div><div class="k">Roast</div><div class="v"><span class="band">{{ roast }}</span></div></div>
+        {%- if bag != '' -%}<div><div class="k">Bag</div><div class="v">{{ bag }} × {{ line_item.quantity }} = {{ roastedG }} g roasted</div></div>{%- endif -%}
         <div><div class="k">Grind</div><div class="v">{{ gh2 }}</div></div>
         {%- if brew != '' -%}<div><div class="k">Dialed for</div><div class="v">{{ brew }}</div></div>{%- endif -%}
       </div>

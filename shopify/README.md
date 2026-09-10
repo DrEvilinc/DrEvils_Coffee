@@ -26,49 +26,56 @@ You can remove or ignore the old **expiration date** in the theme editor Countdo
 
 # Shopify: Roast + grind picker (`roast-grind-picker.liquid`)
 
-Companion to the configurator on drevil.coffee/collection. Roast is a Shopify
-**variant** (Option "Roast": Low Voltage / Full Charge / Maximum Overdrive);
-grind is a **line-item property** ("Grind"). The site deep-links here as
-`/products/<handle>?roast=…&grind=…&brew=…` and this snippet pre-selects both.
+Companion to the configurator on drevil.coffee/collection. Roast and Bag Size
+are Shopify **variants** (Option1 "Roast", Option2 "Bag Size"); grind is a
+**line-item property** ("Grind"). The site deep-links here as
+`/products/<handle>?roast=…&size=…&grind=…&brew=…` and this snippet applies all of them.
 
 Install steps are in the header comment of the snippet. **Installed on the
 live Prestige theme 2026-09-09** (snippet file + guarded render line in
 `snippets/product-info.liquid`).
 
-### Why it is dormant right now
+### Catalog: option A, locked 2026-09-10
 
-The live LAB products (checked 2026-09-09 via `/products/<handle>.json`) are
-NOT single-variant. Every one of them is
+    Option1  Roast     Low Voltage / Full Charge / Maximum Overdrive
+    Option2  Bag Size  8 oz / 12 oz / 1 lb / 2 lbs
+    = 12 variants per lot, 72 in total.  SKU  LAB-00X-<LV|FC|MO>-<8OZ|12OZ|1LB|2LB>
+    Grind = line-item property "Grind" (8 values). NOT an option.
 
-    Option1  Bag Size    8 oz / 12 oz / 1 lb / 2 lbs
-    Option2  Grind size  Pour Over / Espresso / Whole Bean
-    = 12 variants, all with SKU = null
+Until the import runs, every live LAB product is still the legacy shape
+(Bag Size x Grind size, 12 variants, SKU null, weight 0). The render line in
+`snippets/product-info.liquid` is wrapped in
+`{%- unless product.options contains 'Grind size' -%}`, so this picker stays
+dormant and never shows up next to the theme's own grind dropdown. It turns
+on per product the moment the import removes "Grind size". There's nothing to edit in the theme.
 
-The render line is wrapped in `{%- unless product.options contains 'Grind
-size' -%}` so the picker does not appear next to the theme's own grind
-dropdown. It switches on per product the moment that product is re-imported
-without a "Grind size" option. Nothing else to touch in the theme.
+### Import runbook (Matrixify)
 
-### Catalog decision still open (blocks the roast import)
+`build_roast_variants_matrixify.py` reads `live_catalog_2026-09-10.json`
+(ids, handles, live per-size prices). Pass `--fetch` to re-pull the prices first.
 
-`build_roast_variants_matrixify.py` assumes one base variant per lot and
-produces 18 variants (`-LV/-FC/-MO`). With four bag sizes live the honest
-matrix is 6 lots × 3 roasts × 4 sizes = 72 variants / 72 UPCs, and the site
-(`roastGrind.ts`, `ConfigureLot.tsx`, `cart.ts`) has no bag-size concept yet.
-Pick one before importing anything:
+1. `python build_roast_variants_matrixify.py --only LAB-001 -o LAB-001_test.csv`
+2. Matrixify → Import → the test file → check the preview: **1 product
+   updated, 12 variants replaced**, with no product created or deleted.
+3. Run it, then open the LAB-001 product page. You should see Roast + Bag Size dropdowns,
+   the 8-grind picker showing, and `?roast=Maximum%20Overdrive&size=1%20lb&grind=Coarse`
+   landing on MO / 1 lb with Coarse checked. Add to cart and the line shows `Grind: Coarse`.
+4. Then the full file (`python build_roast_variants_matrixify.py`) for the other five.
+5. UPCs: once there's a `SKU,UPC` map, run
+   `python build_roast_variants_matrixify.py --barcodes upc.csv --barcodes-only`
+   and import the `_BARCODES.csv` (it only updates barcodes and doesn't touch variants).
 
-- **A. Roast × Bag Size as variants, grind as property** (matches the film
-  vocabulary and this snippet; 12 variants per lot, 72 UPCs total; drop the
-  3-value "Grind size" option and let the 8-value property replace it).
-- **B. Keep Bag Size × Grind size, add Roast as Option3** (36 variants per
-  lot, 216 UPCs; snippet stays dormant, site needs a grind→variant map).
-- **C. One bag size for launch** (18 variants / 18 UPCs as scripted).
+What the import does: `Command=UPDATE` matched by product ID (title, body,
+images, SEO, tags and handle all stay put), `Variant Command=REPLACE` (the 12 legacy
+variants are deleted and 12 new ones created, so old variant IDs / open carts die).
+Prices carry over by size, and roast is price-neutral. Inventory policy is
+`continue` (roasted to order). Weight = **net** coffee (0.5 / 0.75 / 1 / 2 lb).
+It's live at 0 today, so weight-based shipping rates currently calculate as free.
+Add the tare with `--tare-lb` once a filled bag has been weighed.
 
-**Each variant needs a real UPC in `Variant Barcode` before import** — the
-script leaves them blank on purpose.
-
-Once variants exist the snippet also honours `?roast=` by swapping to the
-roast variant; before that it records the roast as a hidden
+The snippet honours `?roast=` + `?size=` by swapping to the matching
+Roast x Bag Size variant (a missing param keeps the page's current value). On
+a product with no Roast option it records the roast as a hidden
 `properties[Roast]` so the order still says what to roast.
 
 ---

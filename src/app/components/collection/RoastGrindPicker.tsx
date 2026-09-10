@@ -2,12 +2,16 @@ import { useMemo, useState } from "react";
 import {
   ROASTS,
   GRINDS,
+  BAG_SIZES,
   BREW_METHODS,
   DEFAULT_ROAST,
   DEFAULT_GRIND,
+  DEFAULT_BAG,
+  getBag,
   getGrind,
   getRoast,
   variantSku,
+  type BagId,
   type GrindId,
   type RoastId,
 } from "../../data/roastGrind";
@@ -15,7 +19,8 @@ import {
 /**
  * Roast + grind customizer for a Dr. Evil's Coffee product page.
  *
- * Roast selects a real Shopify variant. Grind is returned as a cart line-item
+ * Roast + bag size select a real Shopify variant (Option1 / Option2). Grind is
+ * returned as a cart line-item
  * property. The component is controlled-optional: pass value/onChange to lift
  * state, or let it manage its own.
  *
@@ -26,11 +31,10 @@ import {
 
 export interface RoastGrindSelection {
   roastId: RoastId;
+  bagId: BagId;
   grindId: GrindId;
   /** The brew method the customer clicked, if they used the brew-first path. */
   brewMethod?: string;
-  /** Shopify variant GID for the chosen roast, when the map supplies one. */
-  variantId?: string;
   /** Ready to spread into cartLinesAdd attributes. */
   attributes: { key: string; value: string }[];
 }
@@ -38,11 +42,12 @@ export interface RoastGrindSelection {
 interface Props {
   /** Base SKU without roast suffix, e.g. "LAB-001". */
   baseSku: string;
-  /** Roast id -> Shopify variant GID. From the Storefront product query. */
-  variantIdByRoast?: Partial<Record<RoastId, string>>;
   /** Roast ids that are out of stock. Rendered disabled rather than hidden. */
   unavailableRoasts?: RoastId[];
+  /** Bag id -> display price ("$26"). From the Storefront query; omitted = no price shown. */
+  bagPrices?: Partial<Record<BagId, string>>;
   defaultRoast?: RoastId;
+  defaultBag?: BagId;
   defaultGrind?: GrindId;
   onChange?: (selection: RoastGrindSelection) => void;
   className?: string;
@@ -53,14 +58,16 @@ const cx = (...parts: (string | false | undefined)[]) =>
 
 export function RoastGrindPicker({
   baseSku,
-  variantIdByRoast,
   unavailableRoasts = [],
+  bagPrices,
   defaultRoast = DEFAULT_ROAST,
+  defaultBag = DEFAULT_BAG,
   defaultGrind = DEFAULT_GRIND,
   onChange,
   className,
 }: Props) {
   const [roastId, setRoastId] = useState<RoastId>(defaultRoast);
+  const [bagId, setBagId] = useState<BagId>(defaultBag);
   const [grindId, setGrindId] = useState<GrindId>(defaultGrind);
   const [brewMethod, setBrewMethod] = useState<string | undefined>(
     "I grind my own"
@@ -69,6 +76,8 @@ export function RoastGrindPicker({
 
   const grind = getGrind(grindId);
   const roast = getRoast(roastId);
+  const bag = getBag(bagId);
+  const sku = variantSku(baseSku, roastId, bagId);
 
   const selection = useMemo<RoastGrindSelection>(() => {
     const attributes = [{ key: "Grind", value: grind.label }];
@@ -77,12 +86,12 @@ export function RoastGrindPicker({
     }
     return {
       roastId,
+      bagId,
       grindId,
       brewMethod,
-      variantId: variantIdByRoast?.[roastId],
       attributes,
     };
-  }, [roastId, grindId, brewMethod, grind.label, variantIdByRoast]);
+  }, [roastId, bagId, grindId, brewMethod, grind.label]);
 
   const emit = (next: Partial<RoastGrindSelection>) => {
     onChange?.({ ...selection, ...next });
@@ -91,7 +100,12 @@ export function RoastGrindPicker({
   const pickRoast = (id: RoastId) => {
     if (unavailableRoasts.includes(id)) return;
     setRoastId(id);
-    emit({ roastId: id, variantId: variantIdByRoast?.[id] });
+    emit({ roastId: id });
+  };
+
+  const pickBag = (id: BagId) => {
+    setBagId(id);
+    emit({ bagId: id });
   };
 
   const pickBrew = (brew: string, id: GrindId) => {
@@ -123,7 +137,7 @@ export function RoastGrindPicker({
             01 — Select roast
           </span>
           <span className="font-mono text-[11px] text-zinc-600">
-            {variantSku(baseSku, roastId)}
+            {sku}
           </span>
         </legend>
 
@@ -194,11 +208,59 @@ export function RoastGrindPicker({
         </p>
       </fieldset>
 
+      {/* ------------------------------------------------------ BAG SIZE */}
+      <fieldset>
+        <legend className="mb-3 flex w-full items-baseline justify-between">
+          <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-400">
+            02 — Bag size
+          </span>
+          <span className="font-mono text-[11px] text-zinc-600">
+            {bag.netGrams} g net
+          </span>
+        </legend>
+
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {BAG_SIZES.map((b) => {
+            const active = b.id === bagId;
+            const price = bagPrices?.[b.id];
+            return (
+              <button
+                key={b.id}
+                type="button"
+                aria-pressed={active}
+                onClick={() => pickBag(b.id)}
+                className={cx(
+                  "rounded-none border px-3 py-2.5 text-left transition-colors",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/70",
+                  active
+                    ? "border-red-500/80 bg-red-500/[0.07]"
+                    : "border-zinc-800 bg-zinc-950 hover:border-zinc-700"
+                )}
+              >
+                <span
+                  className={cx(
+                    "block text-sm font-semibold tracking-wide",
+                    active ? "text-red-300" : "text-zinc-200"
+                  )}
+                >
+                  {b.label}
+                </span>
+                {price && (
+                  <span className="mt-0.5 block font-mono text-[11px] text-zinc-500">
+                    {price}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
+
       {/* ------------------------------------------------------ GRIND */}
       <fieldset>
         <legend className="mb-3 flex w-full items-baseline justify-between">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-zinc-400">
-            02 — {manualGrind ? "Select grind" : "What are you brewing on?"}
+            03 — {manualGrind ? "Select grind" : "What are you brewing on?"}
           </span>
           <button
             type="button"
@@ -282,6 +344,15 @@ export function RoastGrindPicker({
             <dd className="text-zinc-200">{roast.optionValue}</dd>
           </div>
           <div className="flex justify-between gap-4">
+            <dt className="text-zinc-500">Bag</dt>
+            <dd className="text-zinc-200">
+              {bag.label}
+              {bagPrices?.[bagId] && (
+                <span className="ml-2 text-zinc-500">{bagPrices[bagId]}</span>
+              )}
+            </dd>
+          </div>
+          <div className="flex justify-between gap-4">
             <dt className="text-zinc-500">Grind</dt>
             <dd className="text-zinc-200">
               {grind.label}
@@ -296,7 +367,7 @@ export function RoastGrindPicker({
           )}
           <div className="flex justify-between gap-4 border-t border-zinc-800 pt-1.5">
             <dt className="text-zinc-500">SKU</dt>
-            <dd className="text-zinc-400">{variantSku(baseSku, roastId)}</dd>
+            <dd className="text-zinc-400">{sku}</dd>
           </div>
         </dl>
         <p className="mt-3 text-[11px] leading-relaxed text-zinc-500">

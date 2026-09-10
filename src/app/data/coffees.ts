@@ -3,7 +3,7 @@ const SHOP_BASE = 'https://shop.drevil.coffee';
 // Keep in sync with live products at shop.drevil.coffee
 export interface Coffee {
   id: string;
-  /** Base SKU (LAB-001..LAB-006). Roast variants append -LV / -FC / -MO. */
+  /** Base SKU (LAB-001..LAB-006). Variants append roast + bag: LAB-001-FC-12OZ. */
   sku: string;
   /** Shopify product handle at shop.drevil.coffee. */
   handle: string;

@@ -9,10 +9,14 @@
  *
  * Events (kept deliberately few — these are the ones the paid test reads):
  *   PageView          every route change
- *   ViewContent       a lot's configurator is opened          { sku }
- *   roast_selected    custom — strongest early intent signal  { sku, roast }
- *   grind_selected    custom                                   { sku, grind, brew }
- *   AddToCart         Storefront path added a line             { sku, roast, grind }
+ *   ViewContent       a lot's configurator is opened          { base sku }
+ *   roast_selected    custom — strongest early intent signal  { variant sku, roast }
+ *   bag_size_selected custom                                   { variant sku, bag_size }
+ *   grind_selected    custom                                   { variant sku, grind, brew }
+ *   AddToCart         Storefront path added a line             { variant sku, roast, bag_size, grind }
+ *
+ * content_ids carries the full variant SKU (LAB-001-FC-12OZ) from the
+ * configurator on, so intent is readable per roast x size.
  *   shop_click        custom — deep link out to shop.drevil.coffee
  *   film_play         custom — hero film started
  *

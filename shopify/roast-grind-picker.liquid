@@ -3,17 +3,19 @@
 
   The Vercel site (drevil.coffee/collection) lets the customer configure a lot,
   then sends them here as:
-      /products/<handle>?roast=Full%20Charge&grind=Medium&brew=Drip%20%2F%20Auto%20Brewer
+      /products/<handle>?roast=Full%20Charge&size=12%20oz&grind=Medium&brew=Drip%20%2F%20Auto%20Brewer
 
   This snippet:
     1. Adds the GRIND radio group (line-item property "Grind") + hidden
        "Brew Method" property.  Grind is a fulfillment instruction, not a
        variant — see the site's src/app/data/roastGrind.ts.
     2. Honours ?grind= and ?brew= by pre-selecting / pre-filling them.
-    3. Honours ?roast= — once the roast variants exist (Option "Roast": Low
-       Voltage / Full Charge / Maximum Overdrive) it swaps the page to that
-       variant.  Until they exist it records the roast as a hidden line-item
-       property so the order still says what to roast.
+    3. Honours ?roast= and ?size=. Catalog option A (locked 2026-09-10) is
+       Option "Roast" (Low Voltage / Full Charge / Maximum Overdrive) x
+       Option "Bag Size" (8 oz / 12 oz / 1 lb / 2 lbs). The script swaps the
+       page to the variant that matches both; if ?size= is missing it keeps
+       the currently selected size. If the product has no Roast option it
+       records the roast as a hidden line-item property instead.
 
   The grind labels below MUST match GRINDS[].label in the site code verbatim,
   and the roast option values MUST match ROASTS[].optionValue — otherwise the
@@ -51,14 +53,18 @@
   assign grind_brews = 'I grind my own,Cold Brew · Cowboy,French Press · Percolator,Chemex · Clever,Drip · Auto Brewer,V60 · AeroPress,Espresso · Moka Pot,Turkish' | split: ','
 
   assign roast_option_index = -1
+  assign size_option_index = -1
   for option in product.options_with_values
     if option.name == 'Roast'
       assign roast_option_index = forloop.index0
     endif
+    if option.name == 'Bag Size'
+      assign size_option_index = forloop.index0
+    endif
   endfor
 -%}
 
-<div class="drevil-grind" data-drevil-grind data-roast-option-index="{{ roast_option_index }}">
+<div class="drevil-grind" data-drevil-grind data-roast-option-index="{{ roast_option_index }}" data-size-option-index="{{ size_option_index }}" data-current-variant="{{ product.selected_or_first_available_variant.id }}">
   <div class="drevil-grind__head">
     <span class="drevil-grind__eyebrow">02 — Select grind</span>
     <span class="drevil-grind__spec" data-grind-spec>unground</span>
@@ -160,6 +166,7 @@
     var wantGrind = params.get('grind');
     var wantBrew = params.get('brew');
     var wantRoast = params.get('roast');
+    var wantSize = params.get('size');
 
     document.querySelectorAll('[data-drevil-grind]').forEach(function (root) {
       var spec = root.querySelector('[data-grind-spec]');
@@ -190,19 +197,30 @@
         brewInput.disabled = false;
       }
 
-      /* ---- ?roast= : swap to the roast variant, or fall back to a property ---- */
-      if (wantRoast) {
+      /* ---- ?roast= / ?size= : swap to the Roast x Bag Size variant ---- */
+      if (wantRoast || wantSize) {
         var optIdx = parseInt(root.getAttribute('data-roast-option-index'), 10);
+        var sizeIdx = parseInt(root.getAttribute('data-size-option-index'), 10);
         var variants = [];
         try {
           variants = JSON.parse(root.querySelector('[data-drevil-variants]').textContent);
         } catch (err) { /* leave empty */ }
 
+        var norm = function (x) { return String(x || '').trim().toLowerCase(); };
+        var current = variants.find(function (v) {
+          return String(v.id) === (params.get('variant') || root.getAttribute('data-current-variant'));
+        }) || variants[0];
+        // Missing param = keep whatever the page already has for that option.
+        var roastWanted = wantRoast || (current && optIdx >= 0 ? current.options[optIdx] : '');
+        var sizeWanted = wantSize || (current && sizeIdx >= 0 ? current.options[sizeIdx] : '');
+
         var match = null;
-        if (optIdx >= 0) {
+        if (optIdx >= 0 || sizeIdx >= 0) {
           match = variants.find(function (v) {
-            var val = (v.options || [])[optIdx];
-            return val && val.toLowerCase() === wantRoast.toLowerCase();
+            var o = v.options || [];
+            if (optIdx >= 0 && norm(o[optIdx]) !== norm(roastWanted)) return false;
+            if (sizeIdx >= 0 && norm(o[sizeIdx]) !== norm(sizeWanted)) return false;
+            return true;
           });
         }
 
@@ -214,7 +232,8 @@
               window.location.pathname + '?' + params.toString() + window.location.hash
             );
           }
-        } else if (roastInput) {
+        }
+        if (wantRoast && optIdx < 0 && roastInput) {
           // Roast variants not imported yet — record the intent on the order.
           roastInput.value = wantRoast;
           roastInput.disabled = false;

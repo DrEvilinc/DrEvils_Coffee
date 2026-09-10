@@ -2,8 +2,9 @@
  * Shopify Storefront API cart helper for Dr. Evil's Coffee.
  *
  * Grind travels as a line-item ATTRIBUTE (Storefront API's name for what the
- * Admin/Liquid side calls a line-item property). Roast is already baked into
- * the variant id, so it is never duplicated as an attribute.
+ * Admin/Liquid side calls a line-item property). Roast and bag size are baked
+ * into the variant id (catalog option A), so they are never duplicated as
+ * attributes, except before that import, when roast still rides as one.
  *
  * Env (Vite):
  *   VITE_SHOPIFY_DOMAIN=shop.drevil.coffee
@@ -118,11 +119,12 @@ const PRODUCT_VARIANTS = `
   query ProductVariants($handle: String!) {
     product(handle: $handle) {
       id
-      variants(first: 20) {
+      variants(first: 100) {
         nodes {
           id
           sku
           availableForSale
+          price { amount currencyCode }
           selectedOptions { name value }
         }
       }
@@ -134,18 +136,13 @@ export interface VariantInfo {
   id: string;
   sku: string | null;
   availableForSale: boolean;
-  /** Option1 "Roast" value, e.g. "Full Charge". Null on a single-variant product. */
-  roast: string | null;
+  price: { amount: string; currencyCode: string } | null;
+  /** Option name (lower-cased) -> value, e.g. { roast: "Full Charge", "bag size": "12 oz" }. */
+  options: Record<string, string>;
 }
 
-/**
- * Variants of one product, keyed by their Roast option value. Before the roast
- * variants are imported a product has one variant with no Roast option — it is
- * returned under the key "" so callers can still add it to the cart.
- */
-export async function fetchVariantsByRoast(
-  handle: string
-): Promise<Record<string, VariantInfo>> {
+/** Every variant of one product, with its options normalised for matching. */
+export async function fetchVariants(handle: string): Promise<VariantInfo[]> {
   const data = await storefront<{
     product: {
       variants: {
@@ -153,25 +150,54 @@ export async function fetchVariantsByRoast(
           id: string;
           sku: string | null;
           availableForSale: boolean;
+          price: { amount: string; currencyCode: string } | null;
           selectedOptions: { name: string; value: string }[];
         }[];
       };
     } | null;
   }>(PRODUCT_VARIANTS, { handle });
 
-  const out: Record<string, VariantInfo> = {};
-  for (const v of data.product?.variants.nodes ?? []) {
-    const roast =
-      v.selectedOptions.find((o) => o.name.toLowerCase() === "roast")?.value ??
-      null;
-    out[roast ?? ""] = {
-      id: v.id,
-      sku: v.sku,
-      availableForSale: v.availableForSale,
-      roast,
-    };
-  }
-  return out;
+  return (data.product?.variants.nodes ?? []).map((v) => ({
+    id: v.id,
+    sku: v.sku,
+    availableForSale: v.availableForSale,
+    price: v.price ?? null,
+    options: Object.fromEntries(
+      v.selectedOptions.map((o) => [o.name.trim().toLowerCase(), o.value])
+    ),
+  }));
+}
+
+export interface VariantWant {
+  roast: string;
+  bagSize: string;
+  /** Only consulted while the legacy "Grind size" option still exists. */
+  legacyGrind?: string;
+}
+
+/**
+ * Pick the variant for a roast + bag size. Works on both catalog shapes:
+ *   option A (Roast x Bag Size)            -> exact match on both
+ *   legacy   (Bag Size x Grind size)       -> match size + nearest legacy grind;
+ *                                             roast must then travel as an attribute
+ * Options the variant doesn't carry are ignored, and so is "Default Title".
+ */
+export function resolveVariant(
+  variants: VariantInfo[],
+  want: VariantWant
+): { variant: VariantInfo; roastIsVariant: boolean } | null {
+  const eq = (a?: string, b?: string) =>
+    (a ?? "").trim().toLowerCase() === (b ?? "").trim().toLowerCase();
+
+  const match = variants.find((v) => {
+    const o = v.options;
+    if ("roast" in o && !eq(o.roast, want.roast)) return false;
+    if ("bag size" in o && !eq(o["bag size"], want.bagSize)) return false;
+    if ("grind size" in o && want.legacyGrind && !eq(o["grind size"], want.legacyGrind))
+      return false;
+    return true;
+  });
+  return match ? { variant: match, roastIsVariant: "roast" in match.options } : null;
 }
 
 function readCartId(): string | null {

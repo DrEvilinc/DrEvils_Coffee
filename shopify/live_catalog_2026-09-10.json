@@ -1,0 +1,11 @@
+{
+  "_source": "shop.drevil.coffee/products/<handle>.json, pulled 2026-09-10. Options were Bag Size x Grind size (12 variants, SKU null, weight 0). Price varies by Bag Size only.",
+  "products": [
+    {"base_sku": "LAB-001", "id": 10404222435512, "handle": "lab-001-colombia-honey-aponte-javier-janamejoy", "title": "LAB-001 · Colombia Honey Aponte Javier Janamejoy", "prices": {"8 oz": "16.00", "12 oz": "26.00", "1 lb": "32.00", "2 lbs": "56.00"}},
+    {"base_sku": "LAB-002", "id": 10404211818680, "handle": "lab-002-peru-huabal-san-pablo", "title": "LAB-002 · Peru Huabal San Pablo", "prices": {"8 oz": "14.00", "12 oz": "24.00", "1 lb": "28.00", "2 lbs": "48.00"}},
+    {"base_sku": "LAB-003", "id": 10405674483896, "handle": "lab-003-ethiopia-organic-gera-nano-challa", "title": "LAB-003 · Ethiopia Organic Gera Nano Challa", "prices": {"8 oz": "18.00", "12 oz": "28.00", "1 lb": "34.00", "2 lbs": "62.00"}},
+    {"base_sku": "LAB-004", "id": 10404221321400, "handle": "lab-004-yemen-mokha-haimi", "title": "LAB-004 · Yemen Mokha Haimi", "prices": {"8 oz": "20.00", "12 oz": "36.00", "1 lb": "44.00", "2 lbs": "78.00"}},
+    {"base_sku": "LAB-005", "id": 10404220010680, "handle": "lab-005-colombia-edward-sandoval-chiroso", "title": "LAB-005 · Colombia Edward Sandoval Chiroso", "prices": {"8 oz": "18.00", "12 oz": "32.00", "1 lb": "38.00", "2 lbs": "68.00"}},
+    {"base_sku": "LAB-006", "id": 10404225089720, "handle": "lab-006-colombia-buesaco-alianza-granjeros", "title": "LAB-006 · Colombia Buesaco Alianza Granjeros", "prices": {"8 oz": "14.00", "12 oz": "22.00", "1 lb": "26.00", "2 lbs": "46.00"}}
+  ]
+}
