@@ -36,6 +36,78 @@
       <!-- Legacy link preview fallback -->
       <link rel="image_src" href="https://drevil.coffee/og-image.png" />
       <link rel="apple-touch-icon" href="/og-image.png" />
+
+      <!-- Crawl directives + canonical (per-route canonical is set by useDocumentMeta) -->
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+      <link rel="canonical" href="https://drevil.coffee/" />
+      <meta name="theme-color" content="#09090b" />
+
+      <!-- Structured data. Keep the product list in sync with src/app/data/coffees.ts
+           (order is always LAB-001 -> LAB-006). Offers/prices get added once confirmed on Shopify. -->
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "@id": "https://drevil.coffee/#org",
+        "name": "Dr. Evil's Coffee Laboratory",
+        "alternateName": "Dr. Evil's Coffee",
+        "url": "https://drevil.coffee/",
+        "logo": "https://drevil.coffee/og-image.png",
+        "image": "https://drevil.coffee/og-image.png",
+        "description": "American precision roasting house in Charlotte, North Carolina. Small-batch single-origin coffee roasted to order — choose your roast (Low Voltage, Full Charge, Maximum Overdrive) and your grind. Third generation of the Dr. Evil name, created by Philip Morris in 1959.",
+        "slogan": "Awaken the beast. One cup at a time.",
+        "foundingDate": "2025",
+        "founder": { "@type": "Person", "name": "Sean Morris" },
+        "parentOrganization": { "@type": "Organization", "name": "Dr. Evil Inc." },
+        "sameAs": ["https://shop.drevil.coffee/", "https://youtu.be/hbskF1RssU4"],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Charlotte",
+          "addressRegion": "NC",
+          "addressCountry": "US"
+        }
+      }
+      </script>
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "@id": "https://drevil.coffee/#website",
+        "url": "https://drevil.coffee/",
+        "name": "Dr. Evil's Coffee Laboratory",
+        "publisher": { "@id": "https://drevil.coffee/#org" }
+      }
+      </script>
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "name": "My grandfather invented a villain in 1959. I turned it into coffee.",
+        "description": "Dr. Evil's Coffee — the hero film. Third generation of the Dr. Evil name, roasting to order in a laboratory in Charlotte, NC.",
+        "thumbnailUrl": "https://drevil.coffee/assets/videos/hero-poster.jpg",
+        "uploadDate": "2026-09-09",
+        "duration": "PT24S",
+        "embedUrl": "https://player.vimeo.com/video/1225470061",
+        "contentUrl": "https://youtu.be/hbskF1RssU4",
+        "publisher": { "@id": "https://drevil.coffee/#org" }
+      }
+      </script>
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Dr. Evil's Coffee — Available Lots",
+        "itemListOrder": "https://schema.org/ItemListOrderAscending",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "item": { "@type": "Product", "sku": "LAB-001", "name": "LAB-001 · Colombia Aponte (Honey) — Javier Janamejoy", "category": "Single-Origin Coffee", "brand": { "@id": "https://drevil.coffee/#org" }, "description": "Honey process. Dense sweetness, dried fruit, spice. Roasted to order — Low Voltage, Full Charge or Maximum Overdrive.", "url": "https://shop.drevil.coffee/products/lab-001-colombia-honey-aponte-javier-janamejoy" } },
+          { "@type": "ListItem", "position": 2, "item": { "@type": "Product", "sku": "LAB-002", "name": "LAB-002 · Peru Huabal San Pablo — Cajamarca", "category": "Single-Origin Coffee", "brand": { "@id": "https://drevil.coffee/#org" }, "description": "Washed. Sweet structure, quiet complexity — honey, brown sugar, red apple, dark chocolate. Roasted to order.", "url": "https://shop.drevil.coffee/products/lab-002-peru-huabal-san-pablo" } },
+          { "@type": "ListItem", "position": 3, "item": { "@type": "Product", "sku": "LAB-003", "name": "LAB-003 · Ethiopia Organic Gera — Nano Challa", "category": "Single-Origin Coffee", "brand": { "@id": "https://drevil.coffee/#org" }, "description": "Washed, organic. Fruited clarity — peach, apricot, orange marmalade, black tea. Roasted to order.", "url": "https://shop.drevil.coffee/products/lab-003-ethiopia-organic-gera-nano-challa" } },
+          { "@type": "ListItem", "position": 4, "item": { "@type": "Product", "sku": "LAB-004", "name": "LAB-004 · Yemen Mokha Haimi — Haima District", "category": "Single-Origin Coffee", "brand": { "@id": "https://drevil.coffee/#org" }, "description": "Natural process. Rustic intensity — molasses, dried date, cedar, whole spice. Roasted to order.", "url": "https://shop.drevil.coffee/products/lab-004-yemen-mokha-haimi" } },
+          { "@type": "ListItem", "position": 5, "item": { "@type": "Product", "sku": "LAB-005", "name": "LAB-005 · Colombia Chiroso — Edward Sandoval, Santa Isabel", "category": "Single-Origin Coffee", "brand": { "@id": "https://drevil.coffee/#org" }, "description": "Washed Chiroso. Floral sweetness, tartaric lift, tea-like clarity. Roasted to order.", "url": "https://shop.drevil.coffee/products/lab-005-colombia-edward-sandoval-chiroso" } },
+          { "@type": "ListItem", "position": 6, "item": { "@type": "Product", "sku": "LAB-006", "name": "LAB-006 · Colombia Buesaco — Alianza Granjeros", "category": "Single-Origin Coffee", "brand": { "@id": "https://drevil.coffee/#org" }, "description": "Washed. Caramel sweetness, balanced acidity, bittersweet chocolate. Espresso-capable. Roasted to order.", "url": "https://shop.drevil.coffee/products/lab-006-colombia-buesaco-alianza-granjeros" } }
+        ]
+      }
+      </script>
     </head>
 
     <body>

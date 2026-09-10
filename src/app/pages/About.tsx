@@ -1,8 +1,16 @@
 import { motion } from 'motion/react';
 import { useInView } from 'react-intersection-observer';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
 const founderPhoto = '/assets/images/founder.png';
 
 export function About() {
+  useDocumentMeta({
+    title: "About — Precision Over Hype | Dr. Evil's Coffee",
+    description:
+      "Dr. Evil's Coffee carries a family legacy of theatrical precision forward as an operating principle — heat managed with intention, development measured, roasted to standard.",
+    path: '/about',
+  });
+
   const { ref: sectionOneRef, inView: sectionOneInView } = useInView({
     triggerOnce: true,
     threshold: 0.1,

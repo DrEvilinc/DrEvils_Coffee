@@ -39,3 +39,14 @@ script leaves them blank on purpose.
 Until the variants are imported the snippet still works: grind pre-selects,
 and the roast is recorded as a hidden `properties[Roast]` so the order says
 what to roast.
+
+---
+
+# Shopify: Order Printer work order (`order-printer-work-order.liquid`)
+
+Per-line production sheet for the roaster: lot, roast, ROEST profile + target
+drop temp, GH2 dial, brew method. Install: Settings → Apps → Order Printer →
+Templates → Add template → paste the file. Reads roast from the "Roast" variant
+option (or the `Roast` line-item property before the variants exist) and grind
+from the `Grind` property. The numbers mirror `src/app/data/roasting.ts` —
+calibrate both together.

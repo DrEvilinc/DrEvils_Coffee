@@ -1,0 +1,112 @@
+{%- comment -%}
+  DR. EVIL'S COFFEE — ROAST & GRIND WORK ORDER
+  ============================================
+  Shopify Order Printer template (Admin → Settings → Apps → Order Printer →
+  Templates → Add template → paste this). Prints a per-line production sheet
+  that tells the roaster exactly what to do on the ROEST and the Mahlkönig GH2.
+
+  WHERE THE DATA COMES FROM
+   - Lot: line_item.sku — LAB-001 or LAB-001-LV/-FC/-MO (the first 7 chars are the lot).
+   - Roast: the "Roast" VARIANT option (Low Voltage / Full Charge / Maximum
+     Overdrive). Before the roast variants are imported, the site records the
+     choice as a line-item property "Roast" instead — this template reads both.
+   - Grind: line-item property "Grind" (Whole Bean, Extra Coarse, Coarse,
+     Medium-Coarse, Medium, Medium-Fine, Fine, Extra Fine) + optional "Brew Method".
+
+  KEEP IN SYNC with src/app/data/roasting.ts (Full Charge drop temps + GH2 dials).
+  These are STARTING numbers — overwrite with calibrated values in both places.
+{%- endcomment -%}
+
+<style>
+  .wo { font-family: 'Courier New', monospace; color:#000; }
+  .wo h1 { font-size:16px; letter-spacing:2px; border-bottom:2px solid #000; padding-bottom:6px; }
+  .wo .li { border:1px solid #000; padding:10px 12px; margin:10px 0; page-break-inside:avoid; }
+  .wo .lab { font-size:18px; font-weight:bold; letter-spacing:2px; }
+  .wo .row { display:flex; gap:14px; margin-top:6px; flex-wrap:wrap; }
+  .wo .k { font-size:10px; letter-spacing:1px; color:#444; text-transform:uppercase; }
+  .wo .v { font-size:13px; font-weight:bold; }
+  .wo .band { background:#000; color:#fff; padding:2px 6px; display:inline-block; letter-spacing:1px; }
+  .wo .note { font-size:11px; margin-top:6px; }
+</style>
+
+<div class="wo">
+  <h1>ROAST &amp; GRIND WORK ORDER — {{ order.name }}</h1>
+  <div class="note">Ordered {{ order.created_at | date: "%b %-d, %Y %I:%M %p" }} · {{ order.customer.first_name }} {{ order.customer.last_name }}</div>
+
+  {% for line_item in line_items %}
+    {%- comment -%} Roast: variant option first, property fallback {%- endcomment -%}
+    {%- assign roast = '' -%}
+    {%- for opt in line_item.variant.options -%}
+      {%- assign o = opt | downcase -%}
+      {%- if o contains 'voltage' or o contains 'charge' or o contains 'overdrive' -%}{%- assign roast = opt -%}{%- endif -%}
+    {%- endfor -%}
+    {%- assign grind = 'Whole Bean' -%}
+    {%- assign brew = '' -%}
+    {%- for p in line_item.properties -%}
+      {%- assign key = p.first | downcase -%}
+      {%- if key == 'roast' and roast == '' -%}{%- assign roast = p.last -%}{%- endif -%}
+      {%- if key == 'grind' -%}{%- assign grind = p.last -%}{%- endif -%}
+      {%- if key == 'brew method' -%}{%- assign brew = p.last -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if roast == '' -%}{%- assign roast = 'Full Charge' -%}{%- endif -%}
+
+    {%- assign sku = line_item.sku | upcase | slice: 0, 7 -%}
+
+    {%- comment -%} Full Charge profile by lot {%- endcomment -%}
+    {%- case sku -%}
+      {%- when 'LAB-001' -%}{%- assign houseC = 209 -%}{%- assign prof = 'LAB-001 Aponte Honey — Full Charge' -%}{%- assign fc = '9:00' -%}{%- assign tt = '10:45' -%}
+      {%- when 'LAB-002' -%}{%- assign houseC = 207 -%}{%- assign prof = 'LAB-002 Peru Huabal — Full Charge' -%}{%- assign fc = '8:45' -%}{%- assign tt = '10:15' -%}
+      {%- when 'LAB-003' -%}{%- assign houseC = 204 -%}{%- assign prof = 'LAB-003 Ethiopia Gera — Full Charge' -%}{%- assign fc = '8:30' -%}{%- assign tt = '9:45' -%}
+      {%- when 'LAB-004' -%}{%- assign houseC = 213 -%}{%- assign prof = 'LAB-004 Yemen Haimi — Full Charge' -%}{%- assign fc = '9:15' -%}{%- assign tt = '11:15' -%}
+      {%- when 'LAB-005' -%}{%- assign houseC = 203 -%}{%- assign prof = 'LAB-005 Chiroso — Full Charge' -%}{%- assign fc = '8:30' -%}{%- assign tt = '9:30' -%}
+      {%- when 'LAB-006' -%}{%- assign houseC = 210 -%}{%- assign prof = 'LAB-006 Buesaco — Full Charge' -%}{%- assign fc = '9:00' -%}{%- assign tt = '10:45' -%}
+      {%- else -%}{%- assign houseC = 0 -%}{%- assign prof = line_item.title -%}{%- assign fc = '—' -%}{%- assign tt = '—' -%}
+    {%- endcase -%}
+
+    {%- comment -%} Roast delta from Full Charge {%- endcomment -%}
+    {%- assign r = roast | downcase -%}
+    {%- if r contains 'low' -%}
+      {%- assign targetC = houseC | minus: 6 -%}{%- assign action = 'LOW VOLTAGE — drop ~6°C earlier, cut ~45s sooner (shorter development).' -%}
+    {%- elsif r contains 'max' or r contains 'overdrive' -%}
+      {%- assign targetC = houseC | plus: 6 -%}{%- assign action = 'MAXIMUM OVERDRIVE — extend ~50s, drop ~6°C later (longer development). Watch 2nd crack on X-tier.' -%}
+    {%- else -%}
+      {%- assign targetC = houseC -%}{%- assign action = 'FULL CHARGE — run saved profile as-is. No change.' -%}
+    {%- endif -%}
+    {%- assign targetF = targetC | times: 9 | divided_by: 5 | plus: 32 -%}
+
+    {%- comment -%} Grind label → GH2 starting dial (mirror of GH2_DIAL in roasting.ts) {%- endcomment -%}
+    {%- assign g = grind | downcase -%}
+    {%- if g contains 'whole' -%}{%- assign gh2 = 'WHOLE BEAN — do not grind' -%}
+    {%- elsif g contains 'extra fine' -%}{%- assign gh2 = 'GH2 · 1 (~150µm)' -%}
+    {%- elsif g contains 'medium-fine' or g contains 'medium fine' -%}{%- assign gh2 = 'GH2 · 6 (~450µm)' -%}
+    {%- elsif g contains 'fine' -%}{%- assign gh2 = 'GH2 · 3 (~300µm)' -%}
+    {%- elsif g contains 'extra coarse' -%}{%- assign gh2 = 'GH2 · 17 (~1200µm)' -%}
+    {%- elsif g contains 'medium-coarse' or g contains 'medium coarse' -%}{%- assign gh2 = 'GH2 · 10 (~700µm)' -%}
+    {%- elsif g contains 'coarse' -%}{%- assign gh2 = 'GH2 · 13 (~900µm)' -%}
+    {%- elsif g contains 'medium' -%}{%- assign gh2 = 'GH2 · 9 (~600µm)' -%}
+    {%- else -%}{%- assign gh2 = grind -%}
+    {%- endif -%}
+
+    <div class="li">
+      <div class="lab">{{ sku }} × {{ line_item.quantity }}</div>
+      <div class="note">{{ line_item.title }}</div>
+
+      <div class="row">
+        <div><div class="k">Roast</div><div class="v"><span class="band">{{ roast }}</span></div></div>
+        <div><div class="k">Grind</div><div class="v">{{ gh2 }}</div></div>
+        {%- if brew != '' -%}<div><div class="k">Dialed for</div><div class="v">{{ brew }}</div></div>{%- endif -%}
+      </div>
+
+      <div class="row">
+        <div><div class="k">ROEST profile</div><div class="v">{{ prof }}</div></div>
+        <div><div class="k">Target drop</div><div class="v">{{ targetC }}°C / {{ targetF }}°F</div></div>
+        <div><div class="k">FC ref</div><div class="v">{{ fc }}</div></div>
+        <div><div class="k">Total ref</div><div class="v">{{ tt }}</div></div>
+      </div>
+
+      <div class="note">▶ {{ action }}</div>
+    </div>
+  {% endfor %}
+
+  <div class="note">Freshness card auto-included in package. Whole bean keeps longest — customer grinds fresh.</div>
+</div>
