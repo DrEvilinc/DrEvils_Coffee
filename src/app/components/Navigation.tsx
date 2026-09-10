@@ -75,7 +75,7 @@ export function Navigation() {
         transition={{ duration: 0.6 }}
       >
         {/* Technical Corner Markers - Desktop Only */}
-        <div className="hidden md:block absolute top-8 left-8 text-zinc-400 font-mono text-xs tracking-wider">
+        <div className="hidden 2xl:block absolute top-8 left-8 text-zinc-400 font-mono text-xs tracking-wider pointer-events-none">
           <div>LAB-001</div>
           <div className="mt-1">Charlotte, North Carolina</div>
           <div className="mt-1">35° 11′ 40.9″ N 80° 47′ 20.0″ W</div>
@@ -85,7 +85,7 @@ export function Navigation() {
           <div className="mt-1">EST. 2025</div>
         </div>
 
-        <div className={`max-w-7xl mx-auto px-6 py-6 flex items-center justify-between 2xl:pr-44 ${
+        <div className={`max-w-7xl mx-auto px-6 py-6 flex items-center justify-between 2xl:pl-44 2xl:pr-44 ${
           scrolled ? 'border-b border-zinc-800' : ''
         }`}>
           {/* Logo */}
