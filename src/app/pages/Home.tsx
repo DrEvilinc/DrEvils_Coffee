@@ -1,5 +1,6 @@
 import { Hero } from '../components/Hero';
 import { HalloweenMarqueeSection } from '../components/HalloweenMarqueeSection';
+import { FilmSection } from '../components/FilmSection';
 import { ThirdAct } from '../components/ThirdAct';
 import { Legacy } from '../components/Legacy';
 import { TheLab } from '../components/TheLab';
@@ -12,6 +13,7 @@ export function Home() {
     <>
       <Hero />
       <HalloweenMarqueeSection />
+      <FilmSection />
       <ThirdAct />
       <Legacy />
       <TheLab />
