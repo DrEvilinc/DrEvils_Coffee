@@ -14,7 +14,7 @@ const HERO_VIDEO = {
 
 export function Hero() {
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black pt-36 pb-28 md:pt-40 short:pt-32 short:pb-20">
       {/* Background film with grid overlay */}
       <div className="absolute inset-0 z-0">
         <video
@@ -41,18 +41,18 @@ export function Hero() {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-20 max-w-5xl mx-auto px-6">
+      <div className="relative z-20 max-w-5xl mx-auto px-6 w-full">
         {/* Main Title */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10 md:mb-16 short:mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extralight text-white mb-6 tracking-tight leading-none">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl short:lg:text-6xl font-extralight text-white mb-6 tracking-tight leading-none">
             Dr. Evil's Coffee Laboratory
           </h1>
-          <div className="flex items-center justify-center gap-4 my-8">
+          <div className="flex items-center justify-center gap-4 my-8 short:my-5">
             <div className="h-px w-16 bg-zinc-700"></div>
             <div className="w-1 h-1 bg-zinc-700 rotate-45"></div>
             <div className="h-px w-16 bg-zinc-700"></div>
@@ -64,7 +64,7 @@ export function Hero() {
 
         {/* Core Statements */}
         <motion.div
-          className="max-w-2xl mx-auto mb-16 text-center"
+          className="max-w-2xl mx-auto mb-10 md:mb-16 short:mb-8 text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
@@ -100,7 +100,7 @@ export function Hero() {
 
       {/* Scroll Indicator */}
       <motion.div
-        className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 short:hidden"
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       >
