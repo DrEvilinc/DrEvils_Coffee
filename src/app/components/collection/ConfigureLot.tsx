@@ -17,6 +17,7 @@ import {
   type VariantInfo,
 } from '../../lib/cart';
 import { Button } from '../ui/button';
+import { track, productParams } from '../../lib/analytics';
 import { RoastGrindPicker, type RoastGrindSelection } from './RoastGrindPicker';
 
 /**
@@ -130,6 +131,7 @@ export function ConfigureLot({ coffee }: Props) {
       // the pick ticket knows what to roast.
       if (!roastIsVariant) attributes.push({ key: 'Roast', value: roast.optionValue });
       const cart = await addToCart([{ variantId: targetVariantId, quantity: 1, attributes }]);
+      track('AddToCart', productParams(coffee.sku, { roast: roast.optionValue, grind: grind.label, num_items: 1 }));
       goToCheckout(cart);
     } catch (err) {
       setStatus({
@@ -150,6 +152,12 @@ export function ConfigureLot({ coffee }: Props) {
         variantIdByRoast={variantIdByRoast}
         unavailableRoasts={unavailableRoasts}
         onChange={(s: RoastGrindSelection) => {
+          if (s.roastId !== selection.roastId) {
+            track('roast_selected', productParams(coffee.sku, { roast: getRoast(s.roastId).optionValue }));
+          }
+          if (s.grindId !== selection.grindId || s.brewMethod !== selection.brewMethod) {
+            track('grind_selected', productParams(coffee.sku, { grind: getGrind(s.grindId).label, brew: s.brewMethod ?? '' }));
+          }
           setSelection(s);
           if (status.kind === 'error') setStatus({ kind: 'idle' });
         }}
@@ -183,6 +191,9 @@ export function ConfigureLot({ coffee }: Props) {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2"
+            onClick={() =>
+              track('shop_click', productParams(coffee.sku, { roast: roast.optionValue, grind: grind.label }))
+            }
           >
             SHOP THIS LOT — {skuLabel}
             <ExternalLink className="w-3.5 h-3.5" />

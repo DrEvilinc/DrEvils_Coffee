@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { useInView } from 'react-intersection-observer';
 import { Play } from 'lucide-react';
 import { FILM, embedSrc, parseFilmUrl } from '../data/film';
+import { track } from '../lib/analytics';
 
 /**
  * "The Film" — click-to-play embed of the full hero cut with sound.
@@ -51,7 +52,10 @@ export function FilmSection() {
           ) : (
             <button
               type="button"
-              onClick={() => setPlaying(true)}
+              onClick={() => {
+                track('film_play', { provider: embed.provider, id: embed.id });
+                setPlaying(true);
+              }}
               aria-label={`Play: ${FILM.title}`}
               className="group absolute inset-0 w-full h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/70"
             >

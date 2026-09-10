@@ -5,6 +5,7 @@ import { Coffee } from '../../data/coffees';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Button } from '../ui/button';
 import { ConfigureLot } from './ConfigureLot';
+import { track, productParams } from '../../lib/analytics';
 
 interface CoffeeCardProps {
   coffee: Coffee;
@@ -127,7 +128,12 @@ export function CoffeeCard({ coffee, image, index }: CoffeeCardProps) {
           type="button"
           aria-expanded={open}
           aria-controls={`configure-${coffee.sku}`}
-          onClick={() => setOpen((v) => !v)}
+          onClick={() =>
+            setOpen((v) => {
+              if (!v) track('ViewContent', productParams(coffee.sku, { origin: coffee.origin }));
+              return !v;
+            })
+          }
           className={
             open
               ? 'w-full mt-8 bg-black text-white hover:bg-zinc-900 border border-zinc-700 font-mono text-xs tracking-[0.25em] h-auto py-5'
