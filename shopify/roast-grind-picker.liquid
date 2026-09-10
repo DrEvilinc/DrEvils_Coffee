@@ -1,0 +1,214 @@
+{%- comment -%}
+  Dr. Evil's Coffee — grind picker + deep-link handshake for shop.drevil.coffee.
+
+  The Vercel site (drevil.coffee/collection) lets the customer configure a lot,
+  then sends them here as:
+      /products/<handle>?roast=Full%20Charge&grind=Medium&brew=Drip%20%2F%20Auto%20Brewer
+
+  This snippet:
+    1. Adds the GRIND radio group (line-item property "Grind") + hidden
+       "Brew Method" property.  Grind is a fulfillment instruction, not a
+       variant — see the site's src/app/data/roastGrind.ts.
+    2. Honours ?grind= and ?brew= by pre-selecting / pre-filling them.
+    3. Honours ?roast= — once the roast variants exist (Option "Roast": Low
+       Voltage / Full Charge / Maximum Overdrive) it swaps the page to that
+       variant.  Until they exist it records the roast as a hidden line-item
+       property so the order still says what to roast.
+
+  The grind labels below MUST match GRINDS[].label in the site code verbatim,
+  and the roast option values MUST match ROASTS[].optionValue — otherwise the
+  deep link stops matching and pick tickets disagree with the catalog.
+
+  Install (Impact theme — Maestrooo):
+    1. Online Store → Themes → Edit code → Snippets → Add a new snippet →
+       name it  roast-grind-picker  and paste this file.
+    2. Open sections/main-product.liquid.  Inside the {%- form 'product' ... -%}
+       block, find   {%- when 'buy-buttons' -%}   and add on the line before
+       the buy-buttons markup:
+           {%- render 'roast-grind-picker', product: product -%}
+       (It must sit INSIDE the product <form> so the properties[] inputs post
+       with the add-to-cart.)
+    3. Save, open any LAB product with ?grind=Coarse and confirm "Coarse" is
+       pre-selected and shows in the cart as "Grind: Coarse".
+
+  Property naming: "Grind" (no leading underscore) is VISIBLE to the customer
+  in cart + confirmation email — deliberate, it confirms we read the order.
+{%- endcomment -%}
+
+{%- liquid
+  assign grind_labels = 'Whole Bean,Extra Coarse,Coarse,Medium-Coarse,Medium,Medium-Fine,Fine,Extra Fine' | split: ','
+  assign grind_microns = 'unground,~1200 µm,~900 µm,~700 µm,~600 µm,~450 µm,~300 µm,~150 µm' | split: ','
+  assign grind_brews = 'I grind my own,Cold Brew · Cowboy,French Press · Percolator,Chemex · Clever,Drip · Auto Brewer,V60 · AeroPress,Espresso · Moka Pot,Turkish' | split: ','
+
+  assign roast_option_index = -1
+  for option in product.options_with_values
+    if option.name == 'Roast'
+      assign roast_option_index = forloop.index0
+    endif
+  endfor
+-%}
+
+<div class="drevil-grind" data-drevil-grind data-roast-option-index="{{ roast_option_index }}">
+  <div class="drevil-grind__head">
+    <span class="drevil-grind__eyebrow">02 — Select grind</span>
+    <span class="drevil-grind__spec" data-grind-spec>unground</span>
+  </div>
+
+  <div class="drevil-grind__options" role="radiogroup" aria-label="Grind size">
+    {%- for label in grind_labels -%}
+      {%- assign i = forloop.index0 -%}
+      <label class="drevil-grind__opt">
+        <input
+          type="radio"
+          name="properties[Grind]"
+          value="{{ label }}"
+          data-microns="{{ grind_microns[i] }}"
+          {% if forloop.first %}checked{% endif %}
+        >
+        <span class="drevil-grind__opt-inner">
+          <span class="drevil-grind__label">{{ label }}</span>
+          <span class="drevil-grind__brew">{{ grind_brews[i] }}</span>
+        </span>
+      </label>
+    {%- endfor -%}
+  </div>
+
+  {%- comment -%} Filled from ?brew= by the script below; harmless when empty. {%- endcomment -%}
+  <input type="hidden" name="properties[Brew Method]" value="" data-brew-property disabled>
+
+  {%- comment -%}
+    Pre-import fallback: while the product has no "Roast" option, carry the
+    roast the customer chose on drevil.coffee as a property. The script
+    enables this input only when the roast could NOT be resolved to a variant.
+  {%- endcomment -%}
+  <input type="hidden" name="properties[Roast]" value="" data-roast-property disabled>
+
+  <p class="drevil-grind__note">
+    Roasted, ground and sealed to order. Nothing sits on a shelf.
+  </p>
+
+  <script type="application/json" data-drevil-variants>
+    {{ product.variants | json }}
+  </script>
+</div>
+
+<style>
+  .drevil-grind { margin: 1.75rem 0; }
+  .drevil-grind__head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 0.75rem;
+  }
+  .drevil-grind__eyebrow {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgb(115 115 115);
+  }
+  .drevil-grind__spec {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px; color: rgb(140 140 140);
+  }
+  .drevil-grind__options {
+    display: grid; gap: 0.5rem; grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (min-width: 750px) {
+    .drevil-grind__options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  .drevil-grind__opt { display: block; cursor: pointer; position: relative; }
+  .drevil-grind__opt input {
+    position: absolute; opacity: 0; width: 0; height: 0;
+  }
+  .drevil-grind__opt-inner {
+    display: block; padding: 0.6rem 0.7rem;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .drevil-grind__opt:hover .drevil-grind__opt-inner {
+    border-color: rgba(128, 128, 128, 0.6);
+  }
+  .drevil-grind__opt input:checked + .drevil-grind__opt-inner {
+    border-color: rgb(220 38 38); background: rgba(220, 38, 38, 0.07);
+  }
+  /* keyboard focus must stay visible — Maestrooo themes strip outlines aggressively */
+  .drevil-grind__opt input:focus-visible + .drevil-grind__opt-inner {
+    outline: 2px solid rgb(220 38 38); outline-offset: 2px;
+  }
+  .drevil-grind__label {
+    display: block; font-size: 0.8rem; font-weight: 500; line-height: 1.2;
+  }
+  .drevil-grind__brew {
+    display: block; margin-top: 0.15rem; font-size: 0.68rem; opacity: 0.62;
+  }
+  .drevil-grind__note {
+    margin-top: 0.7rem; font-size: 0.72rem; opacity: 0.6;
+  }
+</style>
+
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var wantGrind = params.get('grind');
+    var wantBrew = params.get('brew');
+    var wantRoast = params.get('roast');
+
+    document.querySelectorAll('[data-drevil-grind]').forEach(function (root) {
+      var spec = root.querySelector('[data-grind-spec]');
+      var brewInput = root.querySelector('[data-brew-property]');
+      var roastInput = root.querySelector('[data-roast-property]');
+
+      function syncSpec() {
+        var checked = root.querySelector('input[name="properties[Grind]"]:checked');
+        if (checked && spec) spec.textContent = checked.getAttribute('data-microns') || '';
+      }
+
+      root.addEventListener('change', function (e) {
+        if (e.target && e.target.name === 'properties[Grind]') syncSpec();
+      });
+
+      /* ---- ?grind= : pre-select the matching radio (exact label match) ---- */
+      if (wantGrind) {
+        var radio = Array.prototype.find.call(
+          root.querySelectorAll('input[name="properties[Grind]"]'),
+          function (r) { return r.value === wantGrind; }
+        );
+        if (radio) { radio.checked = true; syncSpec(); }
+      }
+
+      /* ---- ?brew= : carry the brew method on the line ---- */
+      if (wantBrew && brewInput) {
+        brewInput.value = wantBrew;
+        brewInput.disabled = false;
+      }
+
+      /* ---- ?roast= : swap to the roast variant, or fall back to a property ---- */
+      if (wantRoast) {
+        var optIdx = parseInt(root.getAttribute('data-roast-option-index'), 10);
+        var variants = [];
+        try {
+          variants = JSON.parse(root.querySelector('[data-drevil-variants]').textContent);
+        } catch (err) { /* leave empty */ }
+
+        var match = null;
+        if (optIdx >= 0) {
+          match = variants.find(function (v) {
+            var val = (v.options || [])[optIdx];
+            return val && val.toLowerCase() === wantRoast.toLowerCase();
+          });
+        }
+
+        if (match) {
+          // Only redirect once, and only if the page is not already on it.
+          if (String(params.get('variant')) !== String(match.id)) {
+            params.set('variant', match.id);
+            window.location.replace(
+              window.location.pathname + '?' + params.toString() + window.location.hash
+            );
+          }
+        } else if (roastInput) {
+          // Roast variants not imported yet — record the intent on the order.
+          roastInput.value = wantRoast;
+          roastInput.disabled = false;
+        }
+      }
+    });
+  })();
+</script>

@@ -21,3 +21,21 @@ The script:
 - On **November 1**, automatically starts counting to next Halloween
 
 You can remove or ignore the old **expiration date** in the theme editor Countdown section; this script overrides the timer behavior.
+
+---
+
+# Shopify: Roast + grind picker (`roast-grind-picker.liquid`)
+
+Companion to the configurator on drevil.coffee/collection. Roast is a Shopify
+**variant** (Option "Roast": Low Voltage / Full Charge / Maximum Overdrive);
+grind is a **line-item property** ("Grind"). The site deep-links here as
+`/products/<handle>?roast=…&grind=…&brew=…` and this snippet pre-selects both.
+
+Install steps are in the header comment of the snippet. Roast variants are
+created with `build_roast_variants_matrixify.py` (18 variants, `-LV/-FC/-MO`);
+**each variant needs a real UPC in `Variant Barcode` before import** — the
+script leaves them blank on purpose.
+
+Until the variants are imported the snippet still works: grind pre-selects,
+and the roast is recorded as a hidden `properties[Roast]` so the order says
+what to roast.

@@ -3,18 +3,38 @@ import { Link } from 'react-router';
 import { ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 
-// Swap to compare: laboratory-illustration.png | brand-laboratory.png
-const heroBackgroundImage = '/assets/images/hero/brand-laboratory.png';
+// Hero film: seamless ~12s loop cut from the R3 hero shoot (silent by design —
+// browsers refuse to autoplay video that carries an audio track).
+// Source of truth for these files: DrEvil_Coffee_Hero/hero_loop.{mp4,webm}.
+const HERO_VIDEO = {
+  webm: '/assets/videos/hero.webm',
+  mp4: '/assets/videos/hero.mp4',
+  poster: '/assets/videos/hero-poster.jpg',
+};
 
 export function Hero() {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden bg-black">
-      {/* Background Image with Grid Overlay */}
+      {/* Background film with grid overlay */}
       <div className="absolute inset-0 z-0">
+        <video
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-60 motion-reduce:hidden"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster={HERO_VIDEO.poster}
+          aria-hidden="true"
+        >
+          <source src={HERO_VIDEO.webm} type="video/webm" />
+          <source src={HERO_VIDEO.mp4} type="video/mp4" />
+        </video>
+        {/* Reduced-motion / no-video fallback: the first frame of the loop */}
         <img
-          src={heroBackgroundImage}
-          alt="Dr. Evil's Coffee laboratory branding"
-          className="absolute inset-0 w-full h-full object-cover object-center opacity-50"
+          src={HERO_VIDEO.poster}
+          alt="Dr. Evil's Coffee laboratory"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-60 hidden motion-reduce:block"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/25 to-black/70 z-10"></div>
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,transparent_70%)] z-10"></div>

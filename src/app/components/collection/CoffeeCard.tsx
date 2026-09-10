@@ -1,8 +1,10 @@
-import { motion } from 'motion/react';
-import { ExternalLink } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { ChevronDown } from 'lucide-react';
 import { Coffee } from '../../data/coffees';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { Button } from '../ui/button';
+import { ConfigureLot } from './ConfigureLot';
 
 interface CoffeeCardProps {
   coffee: Coffee;
@@ -11,6 +13,7 @@ interface CoffeeCardProps {
 }
 
 export function CoffeeCard({ coffee, image, index }: CoffeeCardProps) {
+  const [open, setOpen] = useState(false);
 
   return (
     <motion.div
@@ -118,21 +121,42 @@ export function CoffeeCard({ coffee, image, index }: CoffeeCardProps) {
           </div>
         </div>
 
+        {/* Configure: roast + grind, then buy */}
         <Button
           size="lg"
-          asChild
-          className="w-full mt-8 bg-white text-black hover:bg-zinc-200 border-white hover:border-zinc-300 font-mono text-xs tracking-[0.25em] h-auto py-5"
+          type="button"
+          aria-expanded={open}
+          aria-controls={`configure-${coffee.sku}`}
+          onClick={() => setOpen((v) => !v)}
+          className={
+            open
+              ? 'w-full mt-8 bg-black text-white hover:bg-zinc-900 border border-zinc-700 font-mono text-xs tracking-[0.25em] h-auto py-5'
+              : 'w-full mt-8 bg-white text-black hover:bg-zinc-200 border-white hover:border-zinc-300 font-mono text-xs tracking-[0.25em] h-auto py-5'
+          }
         >
-          <a
-            href={coffee.shopUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2"
-          >
-            SHOP THIS LOT
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+          <span className="inline-flex items-center justify-center gap-2">
+            {open ? 'CLOSE' : `CONFIGURE ${coffee.sku}`}
+            <ChevronDown
+              className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`}
+            />
+          </span>
         </Button>
+
+        <AnimatePresence initial={false}>
+          {open && (
+            <motion.div
+              id={`configure-${coffee.sku}`}
+              key="configure"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="overflow-hidden"
+            >
+              <ConfigureLot coffee={coffee} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.div>
   );
