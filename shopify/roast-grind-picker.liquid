@@ -19,17 +19,27 @@
   and the roast option values MUST match ROASTS[].optionValue — otherwise the
   deep link stops matching and pick tickets disagree with the catalog.
 
-  Install (Impact theme — Maestrooo):
-    1. Online Store → Themes → Edit code → Snippets → Add a new snippet →
-       name it  roast-grind-picker  and paste this file.
-    2. Open sections/main-product.liquid.  Inside the {%- form 'product' ... -%}
-       block, find   {%- when 'buy-buttons' -%}   and add on the line before
-       the buy-buttons markup:
-           {%- render 'roast-grind-picker', product: product -%}
-       (It must sit INSIDE the product <form> so the properties[] inputs post
-       with the add-to-cart.)
+  Install (Prestige 11.x — Maestrooo; also works on Impact):
+    1. Online Store → Themes → ⋯ → Edit code → snippets → New file →
+       roast-grind-picker.liquid → paste this file.
+    2. Open snippets/product-info.liquid, find   {%- when 'buy_buttons' -%}
+       and add on the line ABOVE   {%- render 'buy-buttons', ... -%}:
+           {%- unless product.options contains 'Grind size' -%}{%- render 'roast-grind-picker', product: product, form_id: product_form_id -%}{%- endunless -%}
+       Prestige keeps the <form> element separate from the blocks and links
+       inputs to it with a form="" attribute, so pass form_id — every input
+       below carries it and posts with the add-to-cart wherever it renders.
+       The `unless` guard is deliberate: as of 2026-09-09 every LAB product
+       still carries the legacy options  Bag Size × Grind size (Pour Over /
+       Espresso / Whole Bean) = 12 variants, no SKUs.  Rendering this picker
+       next to a native grind dropdown gives the customer two grind choices,
+       so the snippet stays dormant per product until that product is
+       re-imported without a "Grind size" option — then it switches on by
+       itself, no theme edit needed.
     3. Save, open any LAB product with ?grind=Coarse and confirm "Coarse" is
        pre-selected and shows in the cart as "Grind: Coarse".
+
+  INSTALLED on the live Prestige theme (id 187587756216) 2026-09-09 — both
+  the snippet file and the guarded render line in product-info.liquid.
 
   Property naming: "Grind" (no leading underscore) is VISIBLE to the customer
   in cart + confirmation email — deliberate, it confirms we read the order.
@@ -63,6 +73,7 @@
           name="properties[Grind]"
           value="{{ label }}"
           data-microns="{{ grind_microns[i] }}"
+          {% if form_id %}form="{{ form_id }}"{% endif %}
           {% if forloop.first %}checked{% endif %}
         >
         <span class="drevil-grind__opt-inner">
@@ -74,14 +85,14 @@
   </div>
 
   {%- comment -%} Filled from ?brew= by the script below; harmless when empty. {%- endcomment -%}
-  <input type="hidden" name="properties[Brew Method]" value="" data-brew-property disabled>
+  <input type="hidden" name="properties[Brew Method]" value="" data-brew-property {% if form_id %}form="{{ form_id }}"{% endif %} disabled>
 
   {%- comment -%}
     Pre-import fallback: while the product has no "Roast" option, carry the
     roast the customer chose on drevil.coffee as a property. The script
     enables this input only when the roast could NOT be resolved to a variant.
   {%- endcomment -%}
-  <input type="hidden" name="properties[Roast]" value="" data-roast-property disabled>
+  <input type="hidden" name="properties[Roast]" value="" data-roast-property {% if form_id %}form="{{ form_id }}"{% endif %} disabled>
 
   <p class="drevil-grind__note">
     Roasted, ground and sealed to order. Nothing sits on a shelf.
